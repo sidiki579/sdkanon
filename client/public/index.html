@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SDK Anon</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<script src="/socket.io/socket.io.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --pd:#0f0621;--pm:#1e0a3c;--pbr:#7c3aed;--pl:#a78bfa;--pa:#c084fc;--pa2:#e879f9;
+  --ton:#f5f3ff;--tm:#c4b5fd;--bc:rgba(167,139,250,0.22);--bi:rgba(255,255,255,0.07);
+  --brd:rgba(167,139,250,0.25);
+}
+html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color:var(--ton);overflow:hidden;}
+#app{height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;}
+
+/* SCREENS */
+.scr{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.scr.on{display:flex;}
+
+/* AUTH */
+#s-auth{background:radial-gradient(ellipse at 60% 0%,#3b0e7a,var(--pd) 65%);align-items:center;justify-content:center;padding:20px;}
+.auth-wrap{width:100%;max-width:360px;background:rgba(255,255,255,0.04);border:1px solid var(--brd);border-radius:24px;padding:32px 24px;}
+.logo{font-size:28px;font-weight:700;letter-spacing:-1px;background:linear-gradient(135deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;}
+.logo span{font-weight:300;}
+.auth-sub{font-size:13px;color:var(--tm);text-align:center;margin:4px 0 24px;}
+.tabs{display:flex;background:rgba(255,255,255,0.06);border-radius:12px;padding:4px;margin-bottom:22px;}
+.tab{flex:1;padding:8px;border-radius:9px;border:none;background:transparent;color:var(--tm);font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;}
+.tab.on{background:var(--pbr);color:#fff;}
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:12px;color:var(--tm);margin-bottom:5px;font-weight:500;}
+.fld input{width:100%;padding:11px 15px;background:var(--bi);border:1px solid var(--brd);border-radius:12px;color:var(--ton);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.fld input:focus{border-color:var(--pl);}
+.fld input::placeholder{color:rgba(196,181,253,0.35);}
+.btn-p{width:100%;padding:13px;background:linear-gradient(135deg,var(--pbr),#9333ea);border:none;border-radius:14px;color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .2s,transform .1s;}
+.btn-p:active{transform:scale(0.98);opacity:.9;}
+.err{color:#f87171;font-size:13px;text-align:center;margin-top:10px;min-height:18px;}
+
+/* HOME */
+#s-home{background:radial-gradient(ellipse at 50% -5%,#3b0e7a,var(--pd) 60%);}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 0;}
+.logo-sm{font-size:22px;font-weight:700;background:linear-gradient(135deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-sm span{font-weight:300;}
+.home-body{flex:1;overflow-y:auto;padding:16px 16px 0;}
+.user-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--bc);border:1px solid var(--brd);border-radius:20px;margin-bottom:16px;}
+.ava{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--pbr),var(--pa2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0;}
+.uname{font-weight:600;font-size:15px;}
+.uhandle{font-size:12px;color:var(--tm);}
+.ib{background:transparent;border:none;color:var(--tm);cursor:pointer;padding:4px;border-radius:8px;display:flex;transition:color .2s;}
+.ib:hover{color:var(--ton);}
+.link-box-wrap{background:var(--bc);border:1px solid var(--brd);border-radius:20px;padding:16px;margin-bottom:16px;}
+.llabel{font-size:12px;color:var(--tm);font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.lrow{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.05);border:1px dashed rgba(167,139,250,0.4);border-radius:11px;padding:9px 13px;}
+.ltext{flex:1;font-size:13px;color:var(--pa);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.chip{padding:10px;border-radius:12px;border:1px solid var(--brd);background:transparent;color:var(--ton);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s;}
+.chip:hover{background:rgba(167,139,250,0.1);}
+.chip.main{background:linear-gradient(135deg,var(--pbr),#9333ea);border-color:transparent;}
+.sec-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.ndot{width:7px;height:7px;border-radius:50%;background:var(--pa2);}
+.conv-list{display:flex;flex-direction:column;gap:8px;padding-bottom:16px;}
+.conv-item{display:flex;align-items:center;gap:13px;padding:14px;background:var(--bc);border:1px solid var(--brd);border-radius:17px;cursor:pointer;transition:background .2s,transform .15s;}
+.conv-item:hover{background:rgba(124,58,237,0.22);transform:translateY(-1px);}
+.conv-ava{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:rgba(124,58,237,0.2);}
+.conv-info{flex:1;min-width:0;}
+.conv-name{font-weight:600;font-size:14px;}
+.conv-prev{font-size:12px;color:var(--tm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.conv-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.conv-time{font-size:11px;color:var(--tm);}
+.ubadge{background:var(--pbr);color:#fff;font-size:11px;font-weight:700;border-radius:20px;padding:2px 8px;}
+.empty{text-align:center;padding:40px 20px;color:var(--tm);}
+.empty .eico{font-size:40px;margin-bottom:10px;}
+.empty p{font-size:14px;line-height:1.6;}
+
+/* BOTTOM NAV */
+.bnav{display:flex;background:rgba(18,4,50,0.98);border-top:1px solid var(--brd);padding:10px 0 14px;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--tm);cursor:pointer;font-family:'Outfit',sans-serif;font-size:10px;font-weight:500;padding:4px 0;transition:color .2s;}
+.ni.on,.ni:hover{color:var(--pa);}
+.ni i{font-size:20px;}
+
+/* CHAT */
+#s-chat{background:var(--pd);}
+.chat-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(15,6,33,0.95);border-bottom:1px solid var(--brd);flex-shrink:0;}
+.back{background:transparent;border:none;color:var(--tm);cursor:pointer;padding:4px;border-radius:10px;display:flex;}
+.chat-title{font-weight:600;font-size:14px;flex:1;}
+.chat-sub{font-size:11px;color:var(--tm);}
+.odot{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;margin-right:4px;}
+.anon-badge{background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.2);border-radius:20px;padding:4px 11px;font-size:11px;color:var(--pa);}
+.msgs{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:10px;}
+.notice{text-align:center;padding:6px;}
+.notice span{background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.18);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--tm);}
+
+/* TIMER ÉPHÉMÈRE */
+.timer-bar-wrap{margin-top:4px;display:flex;align-items:center;gap:6px;}
+.timer-bar-bg{flex:1;height:3px;background:rgba(167,139,250,0.15);border-radius:3px;overflow:hidden;}
+.timer-bar{height:100%;background:linear-gradient(90deg,var(--pa2),var(--pbr));border-radius:3px;transition:width 1s linear;}
+.timer-label{font-size:10px;color:var(--tm);white-space:nowrap;min-width:36px;text-align:right;}
+
+.mrow{display:flex;flex-direction:column;}
+.mrow.sent{align-items:flex-end;}
+.mrow.recv{align-items:flex-start;}
+.atag{font-size:11px;color:var(--pa);margin-bottom:2px;font-weight:600;}
+.bbl{max-width:78%;padding:10px 15px;border-radius:18px;font-size:14px;line-height:1.5;}
+.bbl.sent{background:linear-gradient(135deg,var(--pbr),#9333ea);color:#fff;border-bottom-right-radius:5px;}
+.bbl.recv{background:rgba(255,255,255,0.08);border:1px solid var(--brd);border-bottom-left-radius:5px;}
+.btime{font-size:10px;color:var(--tm);margin-top:3px;padding:0 3px;}
+.cinput-bar{padding:12px 14px;background:rgba(15,6,33,0.97);border-top:1px solid var(--brd);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.cinput{flex:1;background:rgba(255,255,255,0.07);border:1px solid var(--brd);border-radius:22px;padding:10px 16px;color:var(--ton);font-family:'Outfit',sans-serif;font-size:14px;outline:none;}
+.cinput:focus{border-color:var(--pl);}
+.cinput::placeholder{color:rgba(196,181,253,0.35);}
+.sbtn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--pbr),var(--pa2));border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;}
+.sbtn:active{transform:scale(0.9);}
+
+/* ANON PAGE */
+#s-anon{background:radial-gradient(ellipse at 50% 0%,#4c1d95,var(--pd) 70%);align-items:center;justify-content:center;padding:24px 18px;}
+.anon-card{background:rgba(255,255,255,0.04);border:1px solid var(--brd);border-radius:26px;padding:36px 24px;text-align:center;width:100%;max-width:360px;}
+.atitle{font-size:22px;font-weight:700;margin-bottom:6px;}
+.asub{font-size:13px;color:var(--tm);margin-bottom:28px;line-height:1.6;}
+.atextbox{background:rgba(255,255,255,0.05);border:1px solid var(--brd);border-radius:14px;padding:16px;text-align:left;margin-bottom:14px;}
+.atextbox label{font-size:12px;color:var(--tm);font-weight:500;margin-bottom:8px;display:block;}
+.atextarea{width:100%;background:transparent;border:none;color:var(--ton);font-family:'Outfit',sans-serif;font-size:15px;resize:none;outline:none;min-height:80px;}
+.atextarea::placeholder{color:rgba(196,181,253,0.3);}
+.pnote{font-size:12px;color:var(--tm);margin-top:14px;display:flex;align-items:center;justify-content:center;gap:5px;}
+.sent-ok{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;}
+.sent-ok .ico{font-size:56px;}
+
+
+/* SHARE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+.modal-overlay.on{opacity:1;pointer-events:all;}
+.share-modal{background:#1a0933;border:1px solid var(--brd);border-radius:24px 24px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);}
+.modal-overlay.on .share-modal{transform:translateY(0);}
+.share-modal-title{font-size:16px;font-weight:700;text-align:center;margin-bottom:6px;}
+.share-modal-link{font-size:12px;color:var(--pa);text-align:center;margin-bottom:20px;word-break:break-all;}
+.share-networks{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.share-net{display:flex;flex-direction:column;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid var(--brd);border-radius:16px;padding:14px 8px;cursor:pointer;transition:background .2s;}
+.share-net:hover{background:rgba(167,139,250,0.12);}
+.share-net-ico{font-size:26px;}
+.share-net-name{font-size:11px;color:var(--tm);font-weight:500;}
+.share-copy-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--pbr),#9333ea);border:none;border-radius:14px;color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;}
+.modal-close{display:block;text-align:center;margin-top:14px;color:var(--tm);font-size:13px;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;width:100%;}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(91,33,182,0.97);border:1px solid var(--brd);border-radius:20px;padding:9px 20px;font-size:13px;font-weight:500;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;}
+.toast.on{opacity:1;}
+
+/* LOADER */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(167,139,250,0.3);border-top-color:var(--pl);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- AUTH -->
+<div id="s-auth" class="scr on">
+  <div class="auth-wrap">
+    <div class="logo">SDK<span>anon</span></div>
+    <div class="auth-sub">Messages anonymes · éphémères · vrais</div>
+    <div class="tabs">
+      <button class="tab on" onclick="setTab('signup',this)">Créer un compte</button>
+      <button class="tab" onclick="setTab('login',this)">Connexion</button>
+    </div>
+    <div id="f-signup">
+      <div class="fld"><label>Nom affiché</label><input id="i-dname" placeholder="ex: Sophie M." /></div>
+      <div class="fld"><label>@pseudo unique</label><input id="i-user" placeholder="sophiem" /></div>
+      <div class="fld"><label>Mot de passe</label><input id="i-pass" type="password" placeholder="••••••••" /></div>
+    </div>
+    <div id="f-login" style="display:none;">
+      <div class="fld"><label>@pseudo</label><input id="l-user" placeholder="sophiem" /></div>
+      <div class="fld"><label>Mot de passe</label><input id="l-pass" type="password" placeholder="••••••••" /></div>
+    </div>
+    <div class="err" id="auth-err"></div>
+    <button class="btn-p" id="auth-btn" onclick="doAuth()">Créer mon compte 🚀</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="s-home" class="scr">
+  <div class="topbar">
+    <div class="logo-sm">SDK<span>anon</span></div>
+    <div style="font-size:11px;background:rgba(167,139,250,0.12);border:1px solid var(--brd);border-radius:20px;padding:3px 10px;color:var(--tm);">💜 bêta</div>
+  </div>
+  <div class="home-body">
+    <div class="user-card">
+      <div class="ava" id="h-ava">S</div>
+      <div style="flex:1;">
+        <div class="uname" id="h-name">Sophie</div>
+        <div class="uhandle" id="h-handle">@sophiem</div>
+      </div>
+      <button class="ib" onclick="logout()"><i class="ti ti-logout" style="font-size:18px;"></i></button>
+    </div>
+    <div class="link-box-wrap">
+      <div class="llabel"><i class="ti ti-link" style="font-size:14px;"></i>Ton lien anonyme</div>
+      <div class="lrow">
+        <span class="ltext" id="h-link">sdkanon.app/@toi</span>
+        <button class="ib" onclick="copyLink()"><i class="ti ti-copy" style="font-size:16px;"></i></button>
+      </div>
+      <div class="share-row">
+        <button class="chip main" onclick="copyLink()"><i class="ti ti-share" style="font-size:15px;"></i>Partager</button>
+        <button class="chip" onclick="showAnon()"><i class="ti ti-eye" style="font-size:15px;"></i>Voir page</button>
+      </div>
+    </div>
+    <div class="sec-title">
+      Messages reçus <span class="ndot" id="notif-dot" style="display:none;"></span>
+    </div>
+    <div class="conv-list" id="conv-list">
+      <div class="empty"><div class="eico">👻</div><p>Partage ton lien pour recevoir<br>tes premiers messages anonymes !</p></div>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="ni on"><i class="ti ti-home"></i>Accueil</button>
+    <button class="ni" onclick="copyLink()"><i class="ti ti-link"></i>Mon lien</button>
+    <button class="ni" onclick="showAnon()"><i class="ti ti-ghost"></i>Page anon</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="s-chat" class="scr">
+  <div class="chat-hdr">
+    <button class="back" onclick="showHome()"><i class="ti ti-arrow-left" style="font-size:21px;"></i></button>
+    <div style="flex:1;">
+      <div class="chat-title" id="c-title">👻 Anonyme</div>
+      <div class="chat-sub"><span class="odot"></span>identité masquée</div>
+    </div>
+    <div class="anon-badge">🔒 Anonyme</div>
+  </div>
+  <div class="notice"><span>💜 Tu ne sauras jamais qui est cette personne</span></div>
+  <div class="msgs" id="msgs"></div>
+  <div class="cinput-bar">
+    <input class="cinput" id="c-inp" placeholder="Répondre à l'anonyme..." onkeydown="if(event.key==='Enter')sendOwnerMsg()"/>
+    <button class="sbtn" onclick="sendOwnerMsg()"><i class="ti ti-send" style="font-size:17px;"></i></button>
+  </div>
+</div>
+
+<!-- PAGE ANONYME -->
+<div id="s-anon" class="scr">
+  <div id="anon-form-wrap">
+    <div class="anon-card">
+      <div style="font-size:48px;margin-bottom:14px;">👻</div>
+      <div class="atitle">Message pour<br><span id="anon-target" style="color:var(--pa);">@sophiem</span></div>
+      <div class="asub">Elle/il ne saura jamais qui tu es.<br>Message supprimé 5 min après lecture.</div>
+      <div class="atextbox">
+        <label>Ton message anonyme</label>
+        <textarea class="atextarea" id="anon-msg" placeholder="Écris ce que tu ressens vraiment..."></textarea>
+      </div>
+      <button class="btn-p" onclick="sendAnonMsg()">Envoyer anonymement 💜</button>
+      <div class="pnote"><i class="ti ti-shield" style="font-size:13px;"></i>Identité 100% protégée · s'efface après lecture</div>
+    </div>
+  </div>
+  <div id="anon-ok" style="display:none;">
+    <div class="anon-card">
+      <div class="sent-ok">
+        <div class="ico">💜</div>
+        <div style="font-size:20px;font-weight:700;">Envoyé !</div>
+        <div style="font-size:13px;color:var(--tm);text-align:center;line-height:1.6;">Ton message a été envoyé.<br>Il disparaîtra 5 min après avoir été lu.</div>
+        <button class="chip" style="margin-top:8px;" onclick="resetAnon()">Envoyer un autre</button>
+        <button class="chip" style="margin-top:4px;" onclick="showHome()">Retour à mon profil</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="share-modal" onclick="if(event.target===this)closeShare()">
+  <div class="share-modal">
+    <div class="share-modal-title">✨ Partage ton lien SDK Anon</div>
+    <div class="share-modal-link" id="share-modal-link">sdkanon.app/?u=toi</div>
+    <div class="share-networks">
+      <div class="share-net" onclick="shareVia('whatsapp')">
+        <div class="share-net-ico">💬</div>
+        <div class="share-net-name">WhatsApp</div>
+      </div>
+      <div class="share-net" onclick="shareVia('instagram')">
+        <div class="share-net-ico">📸</div>
+        <div class="share-net-name">Instagram</div>
+      </div>
+      <div class="share-net" onclick="shareVia('twitter')">
+        <div class="share-net-ico">🐦</div>
+        <div class="share-net-name">Twitter/X</div>
+      </div>
+      <div class="share-net" onclick="shareVia('tiktok')">
+        <div class="share-net-ico">🎵</div>
+        <div class="share-net-name">TikTok</div>
+      </div>
+      <div class="share-net" onclick="shareVia('facebook')">
+        <div class="share-net-ico">👍</div>
+        <div class="share-net-name">Facebook</div>
+      </div>
+      <div class="share-net" onclick="shareVia('telegram')">
+        <div class="share-net-ico">✈️</div>
+        <div class="share-net-name">Telegram</div>
+      </div>
+      <div class="share-net" onclick="shareVia('sms')">
+        <div class="share-net-ico">📱</div>
+        <div class="share-net-name">SMS</div>
+      </div>
+      <div class="share-net" onclick="shareVia('email')">
+        <div class="share-net-ico">📧</div>
+        <div class="share-net-name">Email</div>
+      </div>
+    </div>
+    <button class="share-copy-btn" onclick="copyShareLink()">📋 Copier le lien</button>
+    <button class="modal-close" onclick="closeShare()">Fermer</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const API = window.location.origin;
+let token = localStorage.getItem('sdk_token');
+let user = JSON.parse(localStorage.getItem('sdk_user') || 'null');
+let socket = null;
+let curConv = null;
+let anonToken = localStorage.getItem('sdk_anon_token');
+let msgTimers = {}; // {msgId: {expiresAt, intervalId}}
+let isSignup = true;
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+(function init() {
+  // Vérifier si on arrive via un lien anonyme /?u=username
+  const params = new URLSearchParams(location.search);
+  const anonUser = params.get('u');
+  if (anonUser) {
+    showAnonPage(anonUser);
+    return;
+  }
+  if (token && user) {
+    startApp();
+  }
+})();
+
+// ─── AUTH ────────────────────────────────────────────────────────────────────
+function setTab(t, el) {
+  isSignup = t === 'signup';
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('f-signup').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('f-login').style.display = isSignup ? 'none' : 'block';
+  document.getElementById('auth-btn').textContent = isSignup ? 'Créer mon compte 🚀' : 'Se connecter';
+  document.getElementById('auth-err').textContent = '';
+}
+
+async function doAuth() {
+  const btn = document.getElementById('auth-btn');
+  const errEl = document.getElementById('auth-err');
+  errEl.textContent = '';
+  btn.innerHTML = '<span class="spin"></span>Chargement...';
+  btn.disabled = true;
+
+  try {
+    let body, url;
+    if (isSignup) {
+      url = API + '/api/register';
+      body = {
+        display_name: document.getElementById('i-dname').value.trim(),
+        username: document.getElementById('i-user').value.trim(),
+        password: document.getElementById('i-pass').value
+      };
+    } else {
+      url = API + '/api/login';
+      body = {
+        username: document.getElementById('l-user').value.trim(),
+        password: document.getElementById('l-pass').value
+      };
+    }
+
+    const res = await fetch(url, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erreur');
+
+    token = data.token;
+    user = data.user;
+    localStorage.setItem('sdk_token', token);
+    localStorage.setItem('sdk_user', JSON.stringify(user));
+    startApp();
+  } catch(e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = isSignup ? 'Créer mon compte 🚀' : 'Se connecter';
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  token = null; user = null;
+  if (socket) socket.disconnect();
+  showScreen('s-auth');
+}
+
+// ─── APP START ────────────────────────────────────────────────────────────────
+function startApp() {
+  document.getElementById('h-ava').textContent = user.display_name[0].toUpperCase();
+  document.getElementById('h-name').textContent = user.display_name;
+  document.getElementById('h-handle').textContent = '@' + user.username;
+  document.getElementById('h-link').textContent = location.host + '/?u=' + user.username;
+  document.getElementById('anon-target').textContent = '@' + user.username;
+  connectSocket();
+  loadConvs();
+  showScreen('s-home');
+}
+
+// ─── SOCKET ───────────────────────────────────────────────────────────────────
+function connectSocket() {
+  if (socket) socket.disconnect();
+  socket = io(API, { auth: { token } });
+
+  socket.on('new_conversation_or_message', (data) => {
+    showToast('💜 Nouveau message anonyme !');
+    loadConvs();
+    document.getElementById('notif-dot').style.display = 'inline-block';
+    if (curConv && curConv.id === data.convId) {
+      appendMsg(data.message, true);
+    }
+  });
+
+  socket.on('new_message', (data) => {
+    if (curConv && data.conversation_id === curConv.id) {
+      appendMsg(data, false);
+    }
+  });
+
+  socket.on('message_timer_started', ({ messageId, expiresAt }) => {
+    startMsgTimer(messageId, expiresAt);
+  });
+}
+
+// ─── CONVERSATIONS ────────────────────────────────────────────────────────────
+async function loadConvs() {
+  try {
+    const res = await fetch(API + '/api/conversations', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const convs = await res.json();
+    renderConvs(convs);
+    const hasUnread = convs.some(c => c.unread > 0);
+    document.getElementById('notif-dot').style.display = hasUnread ? 'inline-block' : 'none';
+  } catch(e) { console.error(e); }
+}
+
+// Cache des conversations pour éviter les bugs avec JSON inline dans onclick
+let convsCache = {};
+
+function renderConvs(convs) {
+  const el = document.getElementById('conv-list');
+  convs.forEach(c => convsCache[c.id] = c);
+  if (!convs.length) {
+    el.innerHTML = '<div class="empty"><div class="eico">👻</div><p>Partage ton lien pour recevoir<br>tes premiers messages anonymes !</p></div>';
+    return;
+  }
+  // data-id évite les bugs d apostrophes/guillemets dans onclick
+  el.innerHTML = convs.map(c => `
+    <div class="conv-item" data-cid="${c.id}" onclick="openConvById(this.dataset.cid)">
+      <div class="conv-ava">${c.anon_label.split(' ')[0]}</div>
+      <div class="conv-info">
+        <div class="conv-name">Anonyme ${c.anon_label}</div>
+        <div class="conv-prev">${c.last_msg ? c.last_msg.replace(/</g,'&lt;') : '...'}</div>
+      </div>
+      <div class="conv-meta">
+        <span class="conv-time">${c.last_time ? fmtTime(c.last_time*1000) : ''}</span>
+        ${c.unread ? `<span class="ubadge">${c.unread}</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function openConvById(id) {
+  const conv = convsCache[id];
+  if (!conv) { showToast('Réessaie dans un instant...'); loadConvs(); return; }
+  openConv(conv);
+}
+
+async function openConv(conv) {
+  curConv = conv;
+  document.getElementById('c-title').textContent = 'Anonyme ' + conv.anon_label;
+  document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Chargement...</div>';
+  showScreen('s-chat');
+  try {
+    const res = await fetch(API + '/api/conversations/' + conv.id + '/messages', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('Erreur ' + res.status);
+    const msgs = await res.json();
+    document.getElementById('msgs').innerHTML = '';
+    if (!msgs.length) {
+      document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Aucun message</div>';
+    } else {
+      msgs.forEach(m => appendMsg(m, m.from_anon));
+    }
+    scrollMsgs();
+    loadConvs();
+  } catch(e) {
+    document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:#f87171;font-size:13px;">Erreur — réessaie</div>';
+    console.error(e);
+  }
+}
+
+// ─── MESSAGES ─────────────────────────────────────────────────────────────────
+function appendMsg(msg, fromAnon) {
+  const area = document.getElementById('msgs');
+  const time = fmtTime(typeof msg.sent_at === 'number' && msg.sent_at < 1e10
+    ? msg.sent_at * 1000 : msg.sent_at);
+
+  const div = document.createElement('div');
+  div.className = 'mrow ' + (fromAnon ? 'recv' : 'sent');
+  div.id = 'msg-' + msg.id;
+
+  let timerHtml = '';
+  if (fromAnon && msg.expires_at) {
+    const expiresAtMs = msg.expires_at * 1000;
+    timerHtml = `
+      <div class="timer-bar-wrap" id="timer-${msg.id}">
+        <div class="timer-bar-bg"><div class="timer-bar" id="bar-${msg.id}" style="width:100%"></div></div>
+        <span class="timer-label" id="tlabel-${msg.id}">⏳ ...</span>
+      </div>`;
+    setTimeout(() => startMsgTimer(msg.id, expiresAtMs), 100);
+  }
+
+  div.innerHTML = `
+    ${fromAnon ? `<div class="atag">👻 Anonyme ${curConv?.anon_label || ''}</div>` : ''}
+    <div class="bbl ${fromAnon ? 'recv' : 'sent'}">${escHtml(msg.content)}</div>
+    <div class="btime">${time}</div>
+    ${timerHtml}`;
+  area.appendChild(div);
+  scrollMsgs();
+}
+
+// ─── TIMER ÉPHÉMÈRE ───────────────────────────────────────────────────────────
+function startMsgTimer(msgId, expiresAtMs) {
+  if (msgTimers[msgId]) clearInterval(msgTimers[msgId].intervalId);
+
+  function tick() {
+    const remaining = expiresAtMs - Date.now();
+    const bar = document.getElementById('bar-' + msgId);
+    const label = document.getElementById('tlabel-' + msgId);
+    if (!bar) { clearInterval(msgTimers[msgId]?.intervalId); return; }
+
+    if (remaining <= 0) {
+      clearInterval(msgTimers[msgId]?.intervalId);
+      // Supprimer visuellement le message
+      const msgEl = document.getElementById('msg-' + msgId);
+      if (msgEl) {
+        msgEl.style.transition = 'opacity 0.8s, transform 0.8s';
+        msgEl.style.opacity = '0';
+        msgEl.style.transform = 'scale(0.9)';
+        setTimeout(() => msgEl.remove(), 800);
+      }
+      return;
+    }
+
+    const totalMs = 5 * 60 * 1000;
+    const pct = Math.max(0, (remaining / totalMs) * 100);
+    bar.style.width = pct + '%';
+    // Couleur qui change selon urgence
+    if (pct < 20) bar.style.background = 'linear-gradient(90deg,#f87171,#ef4444)';
+    else if (pct < 50) bar.style.background = 'linear-gradient(90deg,#fb923c,#f97316)';
+
+    const secs = Math.floor(remaining / 1000);
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    label.textContent = '⏳ ' + (m > 0 ? m + 'm' : '') + s + 's';
+  }
+
+  tick();
+  msgTimers[msgId] = { expiresAtMs, intervalId: setInterval(tick, 1000) };
+}
+
+async function sendOwnerMsg() {
+  const inp = document.getElementById('c-inp');
+  const txt = inp.value.trim();
+  if (!txt || !curConv) return;
+  inp.value = '';
+
+  try {
+    const res = await fetch(API + '/api/conversations/' + curConv.id + '/messages', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: txt })
+    });
+    const msg = await res.json();
+    appendMsg(msg, false);
+    loadConvs();
+  } catch(e) { showToast('❌ Erreur envoi'); }
+}
+
+// ─── PAGE ANONYME ─────────────────────────────────────────────────────────────
+function showAnonPage(username) {
+  document.getElementById('anon-target').textContent = '@' + username;
+  document.getElementById('anon-form-wrap').style.display = 'flex';
+  document.getElementById('anon-form-wrap').style.flexDirection = 'column';
+  document.getElementById('anon-form-wrap').style.alignItems = 'center';
+  document.getElementById('anon-ok').style.display = 'none';
+  showScreen('s-anon');
+  window._anonUsername = username;
+}
+
+function showAnon() {
+  if (user) showAnonPage(user.username);
+}
+
+async function sendAnonMsg() {
+  const txt = document.getElementById('anon-msg').value.trim();
+  if (!txt) { showToast('✏️ Écris un message d\'abord'); return; }
+  const target = window._anonUsername || user?.username;
+  if (!target) return;
+
+  try {
+    const res = await fetch(API + '/api/anon/send/' + target, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: txt, anon_token: anonToken })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    // Sauvegarder le token anonyme pour réutiliser la même conversation
+    anonToken = data.anon_token;
+    localStorage.setItem('sdk_anon_token', anonToken);
+    document.getElementById('anon-form-wrap').style.display = 'none';
+    document.getElementById('anon-ok').style.display = 'flex';
+    document.getElementById('anon-ok').style.flexDirection = 'column';
+    document.getElementById('anon-ok').style.alignItems = 'center';
+  } catch(e) { showToast('❌ ' + e.message); }
+}
+
+function resetAnon() {
+  document.getElementById('anon-msg').value = '';
+  document.getElementById('anon-form-wrap').style.display = 'flex';
+  document.getElementById('anon-form-wrap').style.flexDirection = 'column';
+  document.getElementById('anon-form-wrap').style.alignItems = 'center';
+  document.getElementById('anon-ok').style.display = 'none';
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function showHome() { showScreen('s-home'); curConv = null; loadConvs(); }
+function scrollMsgs() { const a = document.getElementById('msgs'); a.scrollTop = a.scrollHeight; }
+function fmtTime(ts) {
+  const d = new Date(ts);
+  const now = new Date();
+  if (d.toDateString() === now.toDateString()) return d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes();
+  return d.getDate()+'/'+(d.getMonth()+1);
+}
+function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function getMyLink() {
+  return location.origin + '/?u=' + (user?.username || '');
+}
+
+function copyLink() {
+  // Ouvrir le modal de partage au lieu de juste copier
+  openShareModal();
+}
+
+function openShareModal() {
+  const link = getMyLink();
+  document.getElementById('share-modal-link').textContent = link;
+  document.getElementById('share-modal').classList.add('on');
+}
+
+function closeShare() {
+  document.getElementById('share-modal').classList.remove('on');
+}
+
+function copyShareLink() {
+  const link = getMyLink();
+  navigator.clipboard.writeText(link).then(() => {
+    showToast('🔗 Lien copié !');
+    closeShare();
+  }).catch(() => {
+    showToast('Lien : ' + link);
+  });
+}
+
+function shareVia(network) {
+  const link = getMyLink();
+  const name = user?.display_name || 'moi';
+  const msg = encodeURIComponent(`💜 Envoie-moi un message anonyme sur SDK Anon ! Tu peux me dire tout ce que tu veux, je ne saurai jamais qui tu es 👻\n${link}`);
+  const urls = {
+    whatsapp: `https://wa.me/?text=${msg}`,
+    twitter:  `https://twitter.com/intent/tweet?text=${msg}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`,
+    telegram: `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${msg}`,
+    sms:      `sms:?body=${msg}`,
+    email:    `mailto:?subject=${encodeURIComponent('Envoie-moi un message anonyme 👻')}&body=${msg}`,
+    instagram: null, // Instagram ne permet pas le partage de lien direct
+    tiktok:    null,
+  };
+
+  if (network === 'instagram' || network === 'tiktok') {
+    copyShareLink();
+    showToast('📋 Lien copié — colle-le dans ta bio ' + (network === 'instagram' ? 'Instagram' : 'TikTok') + ' !');
+    return;
+  }
+
+  // Essayer la Web Share API en priorité sur mobile
+  if (network === 'whatsapp' && navigator.share) {
+    navigator.share({
+      title: 'SDK Anon — Messages anonymes',
+      text: `💜 Envoie-moi un message anonyme ! Tu peux me dire tout ce que tu veux, je ne saurai jamais qui tu es 👻`,
+      url: link
+    }).catch(() => window.open(urls.whatsapp, '_blank'));
+    return;
+  }
+
+  if (urls[network]) window.open(urls[network], '_blank');
+  closeShare();
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2800);
+}
+</script>
+</body>
+</html>
