@@ -3,21 +3,19 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SDK Anon</title>
+<title>SDK Anon — Messages anonymes</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
 <script src="/socket.io/socket.io.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --pd:#0f0621;--pm:#1e0a3c;--pbr:#7c3aed;--pl:#a78bfa;--pa:#c084fc;--pa2:#e879f9;
+  --pd:#0f0621;--pbr:#7c3aed;--pl:#a78bfa;--pa:#c084fc;--pa2:#e879f9;
   --ton:#f5f3ff;--tm:#c4b5fd;--bc:rgba(167,139,250,0.22);--bi:rgba(255,255,255,0.07);
   --brd:rgba(167,139,250,0.25);
 }
 html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color:var(--ton);overflow:hidden;}
 #app{height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;}
-
-/* SCREENS */
 .scr{display:none;flex-direction:column;height:100%;overflow:hidden;}
 .scr.on{display:flex;}
 
@@ -81,8 +79,8 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .ni.on,.ni:hover{color:var(--pa);}
 .ni i{font-size:20px;}
 
-/* CHAT */
-#s-chat{background:var(--pd);}
+/* CHAT COMMUN (owner + anon) */
+.chat-scr{background:var(--pd);}
 .chat-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(15,6,33,0.95);border-bottom:1px solid var(--brd);flex-shrink:0;}
 .back{background:transparent;border:none;color:var(--tm);cursor:pointer;padding:4px;border-radius:10px;display:flex;}
 .chat-title{font-weight:600;font-size:14px;flex:1;}
@@ -90,7 +88,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .odot{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;margin-right:4px;}
 .anon-badge{background:rgba(192,132,252,0.1);border:1px solid rgba(192,132,252,0.2);border-radius:20px;padding:4px 11px;font-size:11px;color:var(--pa);}
 .msgs{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:10px;}
-.notice{text-align:center;padding:6px;}
+.notice{text-align:center;padding:6px 14px;}
 .notice span{background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.18);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--tm);}
 
 /* TIMER ÉPHÉMÈRE */
@@ -98,14 +96,13 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .timer-bar-bg{flex:1;height:3px;background:rgba(167,139,250,0.15);border-radius:3px;overflow:hidden;}
 .timer-bar{height:100%;background:linear-gradient(90deg,var(--pa2),var(--pbr));border-radius:3px;transition:width 1s linear;}
 .timer-label{font-size:10px;color:var(--tm);white-space:nowrap;min-width:36px;text-align:right;}
-
 .mrow{display:flex;flex-direction:column;}
 .mrow.sent{align-items:flex-end;}
 .mrow.recv{align-items:flex-start;}
 .atag{font-size:11px;color:var(--pa);margin-bottom:2px;font-weight:600;}
-.bbl{max-width:78%;padding:10px 15px;border-radius:18px;font-size:14px;line-height:1.5;}
-.bbl.sent{background:linear-gradient(135deg,var(--pbr),#9333ea);color:#fff;border-bottom-right-radius:5px;}
-.bbl.recv{background:rgba(255,255,255,0.08);border:1px solid var(--brd);border-bottom-left-radius:5px;}
+.bbl{max-width:78%;padding:10px 15px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word;}
+.bbl.sent{background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.12);color:var(--ton);border-bottom-right-radius:5px;}
+.bbl.recv{background:linear-gradient(135deg,var(--pbr),#9333ea);color:#fff;border-bottom-left-radius:5px;}
 .btime{font-size:10px;color:var(--tm);margin-top:3px;padding:0 3px;}
 .cinput-bar{padding:12px 14px;background:rgba(15,6,33,0.97);border-top:1px solid var(--brd);display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .cinput{flex:1;background:rgba(255,255,255,0.07);border:1px solid var(--brd);border-radius:22px;padding:10px 16px;color:var(--ton);font-family:'Outfit',sans-serif;font-size:14px;outline:none;}
@@ -114,40 +111,44 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .sbtn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--pbr),var(--pa2));border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;}
 .sbtn:active{transform:scale(0.9);}
 
-/* ANON PAGE */
+/* PAGE ANONYME — formulaire initial */
 #s-anon{background:radial-gradient(ellipse at 50% 0%,#4c1d95,var(--pd) 70%);align-items:center;justify-content:center;padding:24px 18px;}
-.anon-card{background:rgba(255,255,255,0.04);border:1px solid var(--brd);border-radius:26px;padding:36px 24px;text-align:center;width:100%;max-width:360px;}
+.anon-card{background:rgba(255,255,255,0.04);border:1px solid var(--brd);border-radius:26px;padding:32px 22px;text-align:center;width:100%;max-width:360px;}
 .atitle{font-size:22px;font-weight:700;margin-bottom:6px;}
-.asub{font-size:13px;color:var(--tm);margin-bottom:28px;line-height:1.6;}
+.asub{font-size:13px;color:var(--tm);margin-bottom:24px;line-height:1.6;}
 .atextbox{background:rgba(255,255,255,0.05);border:1px solid var(--brd);border-radius:14px;padding:16px;text-align:left;margin-bottom:14px;}
 .atextbox label{font-size:12px;color:var(--tm);font-weight:500;margin-bottom:8px;display:block;}
 .atextarea{width:100%;background:transparent;border:none;color:var(--ton);font-family:'Outfit',sans-serif;font-size:15px;resize:none;outline:none;min-height:80px;}
 .atextarea::placeholder{color:rgba(196,181,253,0.3);}
-.pnote{font-size:12px;color:var(--tm);margin-top:14px;display:flex;align-items:center;justify-content:center;gap:5px;}
-.sent-ok{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;}
-.sent-ok .ico{font-size:56px;}
+.pnote{font-size:11px;color:var(--tm);margin-top:12px;display:flex;align-items:center;justify-content:center;gap:5px;}
 
+/* CHAT ANONYME — après envoi du 1er message */
+#s-anon-chat{background:var(--pd);}
+.anon-chat-hdr{display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(15,6,33,0.95);border-bottom:1px solid var(--brd);flex-shrink:0;}
+.anon-chat-info{flex:1;}
+.anon-chat-title{font-weight:600;font-size:14px;}
+.anon-chat-sub{font-size:11px;color:var(--tm);}
+
+/* MODAL INSCRIPTION */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+.modal-overlay.on{opacity:1;pointer-events:all;}
+.bottom-sheet{background:#1a0933;border:1px solid var(--brd);border-radius:24px 24px 0 0;padding:28px 22px 40px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);}
+.modal-overlay.on .bottom-sheet{transform:translateY(0);}
+.bs-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:6px;}
+.bs-sub{font-size:13px;color:var(--tm);text-align:center;margin-bottom:22px;line-height:1.6;}
+.modal-close{display:block;text-align:center;margin-top:16px;color:var(--tm);font-size:13px;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;width:100%;padding:4px;}
 
 /* SHARE MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
-.modal-overlay.on{opacity:1;pointer-events:all;}
-.share-modal{background:#1a0933;border:1px solid var(--brd);border-radius:24px 24px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);}
-.modal-overlay.on .share-modal{transform:translateY(0);}
-.share-modal-title{font-size:16px;font-weight:700;text-align:center;margin-bottom:6px;}
-.share-modal-link{font-size:12px;color:var(--pa);text-align:center;margin-bottom:20px;word-break:break-all;}
-.share-networks{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-.share-net{display:flex;flex-direction:column;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid var(--brd);border-radius:16px;padding:14px 8px;cursor:pointer;transition:background .2s;}
+.share-networks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.share-net{display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,0.05);border:1px solid var(--brd);border-radius:14px;padding:12px 6px;cursor:pointer;transition:background .2s;}
 .share-net:hover{background:rgba(167,139,250,0.12);}
-.share-net-ico{font-size:26px;}
-.share-net-name{font-size:11px;color:var(--tm);font-weight:500;}
-.share-copy-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--pbr),#9333ea);border:none;border-radius:14px;color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;}
-.modal-close{display:block;text-align:center;margin-top:14px;color:var(--tm);font-size:13px;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;width:100%;}
+.share-net-ico{font-size:24px;}
+.share-net-name{font-size:10px;color:var(--tm);font-weight:500;}
+.share-modal-link{font-size:11px;color:var(--pa);text-align:center;margin-bottom:16px;word-break:break-all;}
 
 /* TOAST */
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(91,33,182,0.97);border:1px solid var(--brd);border-radius:20px;padding:9px 20px;font-size:13px;font-weight:500;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;}
 .toast.on{opacity:1;}
-
-/* LOADER */
 .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(167,139,250,0.3);border-top-color:var(--pl);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
@@ -155,7 +156,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 <body>
 <div id="app">
 
-<!-- AUTH -->
+<!-- ① AUTH -->
 <div id="s-auth" class="scr on">
   <div class="auth-wrap">
     <div class="logo">SDK<span>anon</span></div>
@@ -178,7 +179,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
   </div>
 </div>
 
-<!-- HOME -->
+<!-- ② HOME -->
 <div id="s-home" class="scr">
   <div class="topbar">
     <div class="logo-sm">SDK<span>anon</span></div>
@@ -197,15 +198,15 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
       <div class="llabel"><i class="ti ti-link" style="font-size:14px;"></i>Ton lien anonyme</div>
       <div class="lrow">
         <span class="ltext" id="h-link">sdkanon.app/@toi</span>
-        <button class="ib" onclick="copyLink()"><i class="ti ti-copy" style="font-size:16px;"></i></button>
+        <button class="ib" onclick="openShareModal()"><i class="ti ti-copy" style="font-size:16px;"></i></button>
       </div>
       <div class="share-row">
-        <button class="chip main" onclick="copyLink()"><i class="ti ti-share" style="font-size:15px;"></i>Partager</button>
-        <button class="chip" onclick="showAnon()"><i class="ti ti-eye" style="font-size:15px;"></i>Voir page</button>
+        <button class="chip main" onclick="openShareModal()"><i class="ti ti-share" style="font-size:15px;"></i>Partager</button>
+        <button class="chip" onclick="previewAnonPage()"><i class="ti ti-eye" style="font-size:15px;"></i>Voir page</button>
       </div>
     </div>
     <div class="sec-title">
-      Messages reçus <span class="ndot" id="notif-dot" style="display:none;"></span>
+      Messages <span class="ndot" id="notif-dot" style="display:none;"></span>
     </div>
     <div class="conv-list" id="conv-list">
       <div class="empty"><div class="eico">👻</div><p>Partage ton lien pour recevoir<br>tes premiers messages anonymes !</p></div>
@@ -213,13 +214,13 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
   </div>
   <div class="bnav">
     <button class="ni on"><i class="ti ti-home"></i>Accueil</button>
-    <button class="ni" onclick="copyLink()"><i class="ti ti-link"></i>Mon lien</button>
-    <button class="ni" onclick="showAnon()"><i class="ti ti-ghost"></i>Page anon</button>
+    <button class="ni" onclick="openShareModal()"><i class="ti ti-link"></i>Mon lien</button>
+    <button class="ni" onclick="previewAnonPage()"><i class="ti ti-ghost"></i>Page anon</button>
   </div>
 </div>
 
-<!-- CHAT -->
-<div id="s-chat" class="scr">
+<!-- ③ CHAT OWNER (toi qui réponds) -->
+<div id="s-chat" class="scr chat-scr">
   <div class="chat-hdr">
     <button class="back" onclick="showHome()"><i class="ti ti-arrow-left" style="font-size:21px;"></i></button>
     <div style="flex:1;">
@@ -236,107 +237,148 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
   </div>
 </div>
 
-<!-- PAGE ANONYME -->
+<!-- ④ PAGE ANONYME — formulaire d'envoi initial -->
 <div id="s-anon" class="scr">
-  <div id="anon-form-wrap">
-    <div class="anon-card">
-      <div style="font-size:48px;margin-bottom:14px;">👻</div>
-      <div class="atitle">Message pour<br><span id="anon-target" style="color:var(--pa);">@sophiem</span></div>
-      <div class="asub">Elle/il ne saura jamais qui tu es.<br>Message supprimé 5 min après lecture.</div>
-      <div class="atextbox">
-        <label>Ton message anonyme</label>
-        <textarea class="atextarea" id="anon-msg" placeholder="Écris ce que tu ressens vraiment..."></textarea>
-      </div>
-      <button class="btn-p" onclick="sendAnonMsg()">Envoyer anonymement 💜</button>
-      <div class="pnote"><i class="ti ti-shield" style="font-size:13px;"></i>Identité 100% protégée · s'efface après lecture</div>
+  <div class="anon-card">
+    <div style="font-size:46px;margin-bottom:12px;">👻</div>
+    <div class="atitle">Message pour<br><span id="anon-target" style="color:var(--pa);">@sophiem</span></div>
+    <div class="asub">Elle/il ne saura jamais qui tu es.<br>Messages supprimés 5 min après lecture.</div>
+    <div class="atextbox">
+      <label>Ton message anonyme</label>
+      <textarea class="atextarea" id="anon-msg" placeholder="Écris ce que tu ressens vraiment..."></textarea>
     </div>
-  </div>
-  <div id="anon-ok" style="display:none;">
-    <div class="anon-card">
-      <div class="sent-ok">
-        <div class="ico">💜</div>
-        <div style="font-size:20px;font-weight:700;">Envoyé !</div>
-        <div style="font-size:13px;color:var(--tm);text-align:center;line-height:1.6;">Ton message a été envoyé.<br>Il disparaîtra 5 min après avoir été lu.</div>
-        <button class="chip" style="margin-top:8px;" onclick="resetAnon()">Envoyer un autre</button>
-        <button class="chip" style="margin-top:4px;" onclick="showHome()">Retour à mon profil</button>
-      </div>
+    <button class="btn-p" id="anon-send-btn" onclick="sendFirstAnonMsg()">Envoyer anonymement 💜</button>
+    <div class="pnote"><i class="ti ti-shield" style="font-size:13px;"></i>Identité 100% protégée · s'efface après lecture</div>
+    <div style="margin-top:16px;text-align:center;">
+      <button onclick="showScreen('s-auth')" style="background:transparent;border:none;color:var(--tm);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;text-decoration:underline;">
+        Tu as déjà un compte ? Connecte-toi
+      </button>
     </div>
   </div>
 </div>
 
+<!-- ⑤ CHAT ANONYME — conversation en temps réel -->
+<div id="s-anon-chat" class="scr chat-scr">
+  <div class="anon-chat-hdr">
+    <button class="back" onclick="goBackFromAnonChat()"><i class="ti ti-arrow-left" style="font-size:21px;"></i></button>
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pbr),var(--pa2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👻</div>
+    <div class="anon-chat-info">
+      <div class="anon-chat-title">Conversation avec <span id="ac-target">@sophiem</span></div>
+      <div class="anon-chat-sub"><span class="odot"></span>anonyme · messages éphémères</div>
+    </div>
+    <div class="anon-badge">🔒</div>
+  </div>
+  <div class="notice"><span>⏱️ Les messages disparaissent 5 min après lecture</span></div>
+  <div class="msgs" id="anon-msgs"></div>
+  <div class="cinput-bar">
+    <input class="cinput" id="ac-inp" placeholder="Continuer la conversation..." onkeydown="if(event.key==='Enter')sendAnonReply()"/>
+    <button class="sbtn" onclick="sendAnonReply()"><i class="ti ti-send" style="font-size:17px;"></i></button>
+  </div>
 </div>
-<!-- SHARE MODAL -->
-<div class="modal-overlay" id="share-modal" onclick="if(event.target===this)closeShare()">
-  <div class="share-modal">
-    <div class="share-modal-title">✨ Partage ton lien SDK Anon</div>
-    <div class="share-modal-link" id="share-modal-link">sdkanon.app/?u=toi</div>
-    <div class="share-networks">
-      <div class="share-net" onclick="shareVia('whatsapp')">
-        <div class="share-net-ico">💬</div>
-        <div class="share-net-name">WhatsApp</div>
-      </div>
-      <div class="share-net" onclick="shareVia('instagram')">
-        <div class="share-net-ico">📸</div>
-        <div class="share-net-name">Instagram</div>
-      </div>
-      <div class="share-net" onclick="shareVia('twitter')">
-        <div class="share-net-ico">🐦</div>
-        <div class="share-net-name">Twitter/X</div>
-      </div>
-      <div class="share-net" onclick="shareVia('tiktok')">
-        <div class="share-net-ico">🎵</div>
-        <div class="share-net-name">TikTok</div>
-      </div>
-      <div class="share-net" onclick="shareVia('facebook')">
-        <div class="share-net-ico">👍</div>
-        <div class="share-net-name">Facebook</div>
-      </div>
-      <div class="share-net" onclick="shareVia('telegram')">
-        <div class="share-net-ico">✈️</div>
-        <div class="share-net-name">Telegram</div>
-      </div>
-      <div class="share-net" onclick="shareVia('sms')">
-        <div class="share-net-ico">📱</div>
-        <div class="share-net-name">SMS</div>
-      </div>
-      <div class="share-net" onclick="shareVia('email')">
-        <div class="share-net-ico">📧</div>
-        <div class="share-net-name">Email</div>
+
+<!-- ⑥ ÉCRAN CONFIRMATION ENVOI -->
+<div id="s-sent-confirm" class="scr" style="background:radial-gradient(ellipse at 50% 0%,#4c1d95,var(--pd) 70%);align-items:center;justify-content:center;padding:24px 18px;">
+  <div class="anon-card" style="text-align:center;">
+    <div style="font-size:52px;margin-bottom:16px;">💜</div>
+    <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Message envoyé !</div>
+    <div style="font-size:14px;color:var(--tm);margin-bottom:28px;line-height:1.6;">
+      Ton message a été envoyé à <span id="sc-target" style="color:var(--pa);font-weight:600;">@?</span><br>
+      Il disparaîtra 5 min après avoir été lu.
+    </div>
+
+    <!-- Proposition inscription/connexion -->
+    <div style="background:rgba(124,58,237,0.15);border:1px solid var(--brd);border-radius:16px;padding:18px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;">👀 Tu veux voir si on te répond ?</div>
+      <div style="font-size:12px;color:var(--tm);margin-bottom:14px;">Crée un compte ou connecte-toi pour recevoir les réponses.</div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-p" style="flex:1;padding:10px;font-size:13px;" onclick="showSignupFromConfirm()">Créer un compte</button>
+        <button class="chip" style="flex:1;padding:10px;font-size:13px;" onclick="showLoginFromConfirm()">Se connecter</button>
       </div>
     </div>
-    <button class="share-copy-btn" onclick="copyShareLink()">📋 Copier le lien</button>
-    <button class="modal-close" onclick="closeShare()">Fermer</button>
+
+    <button onclick="goToAnonChat()" style="background:transparent;border:none;color:var(--tm);font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;text-decoration:underline;padding:8px;">
+      Continuer sans compte →
+    </button>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<!-- MODAL PARTAGE -->
+<div class="modal-overlay" id="share-modal" onclick="if(event.target===this)closeModal('share-modal')">
+  <div class="bottom-sheet">
+    <div class="bs-title">✨ Partage ton lien</div>
+    <div class="share-modal-link" id="share-modal-link"></div>
+    <div class="share-networks">
+      <div class="share-net" onclick="shareVia('whatsapp')"><div class="share-net-ico">💬</div><div class="share-net-name">WhatsApp</div></div>
+      <div class="share-net" onclick="shareVia('instagram')"><div class="share-net-ico">📸</div><div class="share-net-name">Instagram</div></div>
+      <div class="share-net" onclick="shareVia('twitter')"><div class="share-net-ico">🐦</div><div class="share-net-name">Twitter/X</div></div>
+      <div class="share-net" onclick="shareVia('tiktok')"><div class="share-net-ico">🎵</div><div class="share-net-name">TikTok</div></div>
+      <div class="share-net" onclick="shareVia('facebook')"><div class="share-net-ico">👍</div><div class="share-net-name">Facebook</div></div>
+      <div class="share-net" onclick="shareVia('telegram')"><div class="share-net-ico">✈️</div><div class="share-net-name">Telegram</div></div>
+      <div class="share-net" onclick="shareVia('sms')"><div class="share-net-ico">📱</div><div class="share-net-name">SMS</div></div>
+      <div class="share-net" onclick="shareVia('email')"><div class="share-net-ico">📧</div><div class="share-net-name">Email</div></div>
+    </div>
+    <button class="btn-p" onclick="copyShareLink()">📋 Copier le lien</button>
+    <button class="modal-close" onclick="closeModal('share-modal')">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL INSCRIPTION ANONYME -->
+<div class="modal-overlay" id="signup-modal" onclick="if(event.target===this)closeModal('signup-modal')">
+  <div class="bottom-sheet">
+    <div class="bs-title">💜 Crée ton compte</div>
+    <div class="bs-sub">Pour ne pas perdre tes conversations et recevoir des notifications quand on te répond !</div>
+    <div class="fld"><label>Nom affiché</label><input id="su-dname" placeholder="ex: Alex" /></div>
+    <div class="fld"><label>@pseudo unique</label><input id="su-user" placeholder="alex123" /></div>
+    <div class="fld"><label>Mot de passe</label><input id="su-pass" type="password" placeholder="••••••••" /></div>
+    <div class="err" id="su-err"></div>
+    <button class="btn-p" onclick="signupFromAnon()">Créer mon compte 🚀</button>
+    <button class="modal-close" onclick="closeModal('signup-modal')">Plus tard</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── CONFIG ──────────────────────────────────────────────────────────────────
 const API = window.location.origin;
 let token = localStorage.getItem('sdk_token');
 let user = JSON.parse(localStorage.getItem('sdk_user') || 'null');
 let socket = null;
 let curConv = null;
-let anonToken = localStorage.getItem('sdk_anon_token');
-let msgTimers = {}; // {msgId: {expiresAt, intervalId}}
+let convsCache = {};
 let isSignup = true;
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
+// Token anonyme : identifie l'anonyme sans compte
+let anonToken = localStorage.getItem('sdk_anon_token');
+let anonConvId = localStorage.getItem('sdk_anon_conv_id');
+let anonTargetUser = null; // username du propriétaire du lien
+let msgTimers = {};
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 (function init() {
-  // Vérifier si on arrive via un lien anonyme /?u=username
   const params = new URLSearchParams(location.search);
-  const anonUser = params.get('u');
-  if (anonUser) {
-    showAnonPage(anonUser);
+  const u = params.get('u');
+
+  // PRIORITÉ 1 : si l'utilisateur est connecté, il va toujours sur son app
+  // même s'il arrive via un lien ?u=xxx (son propre lien ou celui de quelqu'un d'autre)
+  if (token && user) {
+    // Nettoyer l'URL si besoin
+    if (location.search) history.replaceState({}, '', '/');
+    startApp();
     return;
   }
-  if (token && user) {
-    startApp();
+
+  // PRIORITÉ 2 : visiteur anonyme arrivant via un lien
+  if (u) {
+    showAnonLanding(u);
+    return;
   }
+
+  // PRIORITÉ 3 : rien — afficher l'écran de connexion
 })();
 
-// ─── AUTH ────────────────────────────────────────────────────────────────────
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
 function setTab(t, el) {
   isSignup = t === 'signup';
   document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
@@ -353,35 +395,30 @@ async function doAuth() {
   errEl.textContent = '';
   btn.innerHTML = '<span class="spin"></span>Chargement...';
   btn.disabled = true;
-
   try {
     let body, url;
     if (isSignup) {
       url = API + '/api/register';
-      body = {
-        display_name: document.getElementById('i-dname').value.trim(),
-        username: document.getElementById('i-user').value.trim(),
-        password: document.getElementById('i-pass').value
-      };
+      body = { display_name: document.getElementById('i-dname').value.trim(), username: document.getElementById('i-user').value.trim(), password: document.getElementById('i-pass').value };
     } else {
       url = API + '/api/login';
-      body = {
-        username: document.getElementById('l-user').value.trim(),
-        password: document.getElementById('l-pass').value
-      };
+      body = { username: document.getElementById('l-user').value.trim(), password: document.getElementById('l-pass').value };
     }
-
-    const res = await fetch(url, {
-      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
-    });
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Erreur');
-
-    token = data.token;
-    user = data.user;
+    token = data.token; user = data.user;
     localStorage.setItem('sdk_token', token);
     localStorage.setItem('sdk_user', JSON.stringify(user));
-    startApp();
+    // Si on était sur une page anonyme (?u=xxx), on nettoie l'URL avant de démarrer
+    if (location.search) history.replaceState({}, '', '/');
+    if (window._afterAuthGoToAnonChat && anonToken && anonConvId) {
+      window._afterAuthGoToAnonChat = false;
+      startApp(); // Charger le profil
+      setTimeout(() => loadAnonChat(), 500); // Puis ouvrir le chat anon
+    } else {
+      startApp();
+    }
   } catch(e) {
     errEl.textContent = e.message;
   } finally {
@@ -397,7 +434,7 @@ function logout() {
   showScreen('s-auth');
 }
 
-// ─── APP START ────────────────────────────────────────────────────────────────
+// ─── APP DÉMARRAGE ────────────────────────────────────────────────────────────
 function startApp() {
   document.getElementById('h-ava').textContent = user.display_name[0].toUpperCase();
   document.getElementById('h-name').textContent = user.display_name;
@@ -410,22 +447,80 @@ function startApp() {
 }
 
 // ─── SOCKET ───────────────────────────────────────────────────────────────────
-function connectSocket() {
+function connectSocket(isAnon = false, anonTok = null) {
   if (socket) socket.disconnect();
-  socket = io(API, { auth: { token } });
+  const authObj = isAnon ? { anon_token: anonTok } : { token };
+  socket = io(API, { auth: authObj });
 
   socket.on('new_conversation_or_message', (data) => {
     showToast('💜 Nouveau message anonyme !');
-    loadConvs();
     document.getElementById('notif-dot').style.display = 'inline-block';
+    // Mettre à jour la conv dans le cache
+    if (convsCache[data.convId]) {
+      convsCache[data.convId].last_msg = data.message.content;
+      convsCache[data.convId].last_time = Math.floor(data.message.sent_at / 1000);
+      convsCache[data.convId].unread = (convsCache[data.convId].unread || 0) + 1;
+    } else {
+      // Nouvelle conversation — l'ajouter au cache
+      convsCache[data.convId] = {
+        id: data.convId,
+        anon_label: data.anonLabel,
+        anon_token: '',
+        last_msg: data.message.content,
+        last_time: Math.floor(data.message.sent_at / 1000),
+        unread: 1
+      };
+    }
+    // Rafraîchir la liste depuis le serveur pour avoir les données complètes
+    loadConvs();
+    // Si la conv est déjà ouverte, ajouter le message directement
     if (curConv && curConv.id === data.convId) {
-      appendMsg(data.message, true);
+      appendMsg('msgs', data.message, true);
+      scrollMsgs('msgs');
     }
   });
 
   socket.on('new_message', (data) => {
+    // Message reçu côté anonyme (réponse du propriétaire)
+    if (anonConvId && data.conversation_id === anonConvId) {
+      appendMsg('anon-msgs', data, false /* du point de vue anon, c'est "reçu" */);
+      showToast('💜 Tu as reçu une réponse !');
+    }
+    // Message reçu côté owner dans le chat ouvert
     if (curConv && data.conversation_id === curConv.id) {
-      appendMsg(data, false);
+      appendMsg('msgs', data, true);
+    }
+  });
+
+  socket.on('owner_reply', (data) => {
+    // Réponse du propriétaire vers l'anonyme
+    if (anonConvId && data.conversation_id === anonConvId) {
+      const anonChatOn = document.getElementById('s-anon-chat').classList.contains('on');
+      if (anonChatOn) {
+        appendMsg('anon-msgs', data, false);
+        scrollMsgs('anon-msgs');
+      } else {
+        // Mettre à jour le cache et re-render la liste avec badge
+        if (convsCache[anonConvId]) {
+          convsCache[anonConvId].unread = (convsCache[anonConvId].unread || 0) + 1;
+          convsCache[anonConvId].last_msg = data.content;
+          convsCache[anonConvId].last_time = Math.floor(data.sent_at / 1000);
+        } else {
+          // Créer l'entrée dans le cache si elle n'existe pas encore
+          convsCache[anonConvId] = {
+            id: anonConvId,
+            anon_label: '👻',
+            _sent_by_me: true,
+            last_msg: data.content,
+            last_time: Math.floor(data.sent_at / 1000),
+            unread: 1
+          };
+        }
+        // Forcer le rechargement depuis le serveur pour avoir le label correct
+        loadConvs();
+        document.getElementById('notif-dot').style.display = 'inline-block';
+        showToastClickable('💜 Réponse reçue ! Clique pour voir', () => loadAnonChat());
+      }
     }
   });
 
@@ -434,48 +529,71 @@ function connectSocket() {
   });
 }
 
-// ─── CONVERSATIONS ────────────────────────────────────────────────────────────
+// ─── CONVERSATIONS (OWNER) ────────────────────────────────────────────────────
 async function loadConvs() {
   try {
-    const res = await fetch(API + '/api/conversations', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    const convs = await res.json();
-    renderConvs(convs);
-    const hasUnread = convs.some(c => c.unread > 0);
+    // Charger les convs reçues (owner)
+    const res = await fetch(API + '/api/conversations', { headers: { 'Authorization': 'Bearer ' + token } });
+    const ownerConvs = await res.json();
+
+    // Charger les convs que j'ai commencées anonymement (si j'ai un anonToken)
+    let anonConvs = [];
+    if (anonToken && anonConvId) {
+      try {
+        const r2 = await fetch(API + '/api/anon/conv-info/' + anonConvId + '?token=' + anonToken);
+        if (r2.ok) {
+          const info = await r2.json();
+          // Marquer comme conv "envoyée par moi"
+          info._sent_by_me = true;
+          anonConvs = [info];
+        }
+      } catch(e) {}
+    }
+
+    // Fusionner et trier par date
+    const all = [...ownerConvs, ...anonConvs].sort((a,b) => (b.last_time||0) - (a.last_time||0));
+    all.forEach(c => convsCache[c.id] = c);
+    renderConvs(all);
+    const hasUnread = all.some(c => c.unread > 0);
     document.getElementById('notif-dot').style.display = hasUnread ? 'inline-block' : 'none';
   } catch(e) { console.error(e); }
 }
 
-// Cache des conversations pour éviter les bugs avec JSON inline dans onclick
-let convsCache = {};
-
 function renderConvs(convs) {
   const el = document.getElementById('conv-list');
-  convs.forEach(c => convsCache[c.id] = c);
   if (!convs.length) {
     el.innerHTML = '<div class="empty"><div class="eico">👻</div><p>Partage ton lien pour recevoir<br>tes premiers messages anonymes !</p></div>';
     return;
   }
-  // data-id évite les bugs d apostrophes/guillemets dans onclick
-  el.innerHTML = convs.map(c => `
+  el.innerHTML = convs.map(c => {
+    const sentByMe = c._sent_by_me;
+    const label = sentByMe ? ('Envoyé à @' + (anonTargetUser || '?')) : ('Anonyme ' + c.anon_label);
+    const emoji = sentByMe ? '✉️' : c.anon_label.split(' ')[0];
+    return `
     <div class="conv-item" data-cid="${c.id}" onclick="openConvById(this.dataset.cid)">
-      <div class="conv-ava">${c.anon_label.split(' ')[0]}</div>
+      <div class="conv-ava" style="${sentByMe ? 'background:rgba(232,121,249,0.18)' : ''}">${emoji}</div>
       <div class="conv-info">
-        <div class="conv-name">Anonyme ${c.anon_label}</div>
-        <div class="conv-prev">${c.last_msg ? c.last_msg.replace(/</g,'&lt;') : '...'}</div>
+        <div class="conv-name">${label}</div>
+        <div class="conv-prev">${c.last_msg ? escHtml(c.last_msg) : '...'}</div>
       </div>
       <div class="conv-meta">
-        <span class="conv-time">${c.last_time ? fmtTime(c.last_time*1000) : ''}</span>
+        <span class="conv-time">${c.last_time ? fmtTime(c.last_time * 1000) : ''}</span>
         ${c.unread ? `<span class="ubadge">${c.unread}</span>` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function openConvById(id) {
   const conv = convsCache[id];
-  if (!conv) { showToast('Réessaie dans un instant...'); loadConvs(); return; }
-  openConv(conv);
+  if (!conv) { showToast('Réessaie...'); loadConvs(); return; }
+  if (conv._sent_by_me) {
+    // C'est une conv que j'ai commencée anonymement → ouvrir le chat anonyme
+    loadAnonChat();
+  } else {
+    // C'est une conv reçue → ouvrir le chat owner
+    openConv(conv);
+  }
 }
 
 async function openConv(conv) {
@@ -484,93 +602,20 @@ async function openConv(conv) {
   document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Chargement...</div>';
   showScreen('s-chat');
   try {
-    const res = await fetch(API + '/api/conversations/' + conv.id + '/messages', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    const res = await fetch(API + '/api/conversations/' + conv.id + '/messages', { headers: { 'Authorization': 'Bearer ' + token } });
     if (!res.ok) throw new Error('Erreur ' + res.status);
     const msgs = await res.json();
     document.getElementById('msgs').innerHTML = '';
     if (!msgs.length) {
       document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Aucun message</div>';
     } else {
-      msgs.forEach(m => appendMsg(m, m.from_anon));
+      msgs.forEach(m => appendMsg('msgs', m, !!m.from_anon));
     }
-    scrollMsgs();
+    scrollMsgs('msgs');
     loadConvs();
   } catch(e) {
     document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:#f87171;font-size:13px;">Erreur — réessaie</div>';
-    console.error(e);
   }
-}
-
-// ─── MESSAGES ─────────────────────────────────────────────────────────────────
-function appendMsg(msg, fromAnon) {
-  const area = document.getElementById('msgs');
-  const time = fmtTime(typeof msg.sent_at === 'number' && msg.sent_at < 1e10
-    ? msg.sent_at * 1000 : msg.sent_at);
-
-  const div = document.createElement('div');
-  div.className = 'mrow ' + (fromAnon ? 'recv' : 'sent');
-  div.id = 'msg-' + msg.id;
-
-  let timerHtml = '';
-  if (fromAnon && msg.expires_at) {
-    const expiresAtMs = msg.expires_at * 1000;
-    timerHtml = `
-      <div class="timer-bar-wrap" id="timer-${msg.id}">
-        <div class="timer-bar-bg"><div class="timer-bar" id="bar-${msg.id}" style="width:100%"></div></div>
-        <span class="timer-label" id="tlabel-${msg.id}">⏳ ...</span>
-      </div>`;
-    setTimeout(() => startMsgTimer(msg.id, expiresAtMs), 100);
-  }
-
-  div.innerHTML = `
-    ${fromAnon ? `<div class="atag">👻 Anonyme ${curConv?.anon_label || ''}</div>` : ''}
-    <div class="bbl ${fromAnon ? 'recv' : 'sent'}">${escHtml(msg.content)}</div>
-    <div class="btime">${time}</div>
-    ${timerHtml}`;
-  area.appendChild(div);
-  scrollMsgs();
-}
-
-// ─── TIMER ÉPHÉMÈRE ───────────────────────────────────────────────────────────
-function startMsgTimer(msgId, expiresAtMs) {
-  if (msgTimers[msgId]) clearInterval(msgTimers[msgId].intervalId);
-
-  function tick() {
-    const remaining = expiresAtMs - Date.now();
-    const bar = document.getElementById('bar-' + msgId);
-    const label = document.getElementById('tlabel-' + msgId);
-    if (!bar) { clearInterval(msgTimers[msgId]?.intervalId); return; }
-
-    if (remaining <= 0) {
-      clearInterval(msgTimers[msgId]?.intervalId);
-      // Supprimer visuellement le message
-      const msgEl = document.getElementById('msg-' + msgId);
-      if (msgEl) {
-        msgEl.style.transition = 'opacity 0.8s, transform 0.8s';
-        msgEl.style.opacity = '0';
-        msgEl.style.transform = 'scale(0.9)';
-        setTimeout(() => msgEl.remove(), 800);
-      }
-      return;
-    }
-
-    const totalMs = 5 * 60 * 1000;
-    const pct = Math.max(0, (remaining / totalMs) * 100);
-    bar.style.width = pct + '%';
-    // Couleur qui change selon urgence
-    if (pct < 20) bar.style.background = 'linear-gradient(90deg,#f87171,#ef4444)';
-    else if (pct < 50) bar.style.background = 'linear-gradient(90deg,#fb923c,#f97316)';
-
-    const secs = Math.floor(remaining / 1000);
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    label.textContent = '⏳ ' + (m > 0 ? m + 'm' : '') + s + 's';
-  }
-
-  tick();
-  msgTimers[msgId] = { expiresAtMs, intervalId: setInterval(tick, 1000) };
 }
 
 async function sendOwnerMsg() {
@@ -578,147 +623,288 @@ async function sendOwnerMsg() {
   const txt = inp.value.trim();
   if (!txt || !curConv) return;
   inp.value = '';
-
   try {
     const res = await fetch(API + '/api/conversations/' + curConv.id + '/messages', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({ content: txt })
     });
     const msg = await res.json();
-    appendMsg(msg, false);
+    appendMsg('msgs', msg, false);
+    scrollMsgs('msgs');
     loadConvs();
   } catch(e) { showToast('❌ Erreur envoi'); }
 }
 
 // ─── PAGE ANONYME ─────────────────────────────────────────────────────────────
-function showAnonPage(username) {
+function showAnonLanding(username) {
+  anonTargetUser = username;
   document.getElementById('anon-target').textContent = '@' + username;
-  document.getElementById('anon-form-wrap').style.display = 'flex';
-  document.getElementById('anon-form-wrap').style.flexDirection = 'column';
-  document.getElementById('anon-form-wrap').style.alignItems = 'center';
-  document.getElementById('anon-ok').style.display = 'none';
+  document.getElementById('ac-target').textContent = '@' + username;
+
+  // Si l'anonyme a déjà une conv avec cette personne, aller direct dans le chat
+  if (anonToken && anonConvId) {
+    loadAnonChat();
+    return;
+  }
   showScreen('s-anon');
-  window._anonUsername = username;
 }
 
-function showAnon() {
-  if (user) showAnonPage(user.username);
+function previewAnonPage() {
+  if (user) showAnonLanding(user.username);
 }
 
-async function sendAnonMsg() {
+function goBackFromAnonChat() {
+  // Si l'utilisateur est connecté → aller sur son profil
+  if (token && user) {
+    if (location.search) history.replaceState({}, '', '/');
+    startApp();
+    return;
+  }
+  // Sinon retourner sur la page d'envoi anonyme
+  showScreen('s-anon');
+}
+
+async function sendFirstAnonMsg() {
   const txt = document.getElementById('anon-msg').value.trim();
   if (!txt) { showToast('✏️ Écris un message d\'abord'); return; }
-  const target = window._anonUsername || user?.username;
-  if (!target) return;
-
+  const btn = document.getElementById('anon-send-btn');
+  btn.innerHTML = '<span class="spin"></span>Envoi...'; btn.disabled = true;
   try {
-    const res = await fetch(API + '/api/anon/send/' + target, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch(API + '/api/anon/send/' + anonTargetUser, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content: txt, anon_token: anonToken })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
-    // Sauvegarder le token anonyme pour réutiliser la même conversation
     anonToken = data.anon_token;
+    anonConvId = data.conv_id;
     localStorage.setItem('sdk_anon_token', anonToken);
-    document.getElementById('anon-form-wrap').style.display = 'none';
-    document.getElementById('anon-ok').style.display = 'flex';
-    document.getElementById('anon-ok').style.flexDirection = 'column';
-    document.getElementById('anon-ok').style.alignItems = 'center';
-  } catch(e) { showToast('❌ ' + e.message); }
+    localStorage.setItem('sdk_anon_conv_id', anonConvId);
+    // Connecter le socket anonyme pour recevoir les réponses en temps réel
+    connectSocket(true, anonToken);
+    // Afficher l'écran de confirmation avant le chat
+    showSentConfirm(txt, data);
+  } catch(e) {
+    showToast('❌ ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Envoyer anonymement 💜';
+  }
 }
 
-function resetAnon() {
-  document.getElementById('anon-msg').value = '';
-  document.getElementById('anon-form-wrap').style.display = 'flex';
-  document.getElementById('anon-form-wrap').style.flexDirection = 'column';
-  document.getElementById('anon-form-wrap').style.alignItems = 'center';
-  document.getElementById('anon-ok').style.display = 'none';
+function showSentConfirm(txt, data) {
+  // Afficher un écran de confirmation élégant avec proposition d'inscription
+  showScreen('s-sent-confirm');
+  document.getElementById('sc-target').textContent = '@' + anonTargetUser;
+  // Stocker les données pour entrer dans le chat ensuite
+  window._pendingMsg = { id: data.msg_id, content: txt, from_anon: 1, sent_at: Math.floor(Date.now()/1000) };
 }
 
-// ─── UTILS ────────────────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-}
-function showHome() { showScreen('s-home'); curConv = null; loadConvs(); }
-function scrollMsgs() { const a = document.getElementById('msgs'); a.scrollTop = a.scrollHeight; }
-function fmtTime(ts) {
-  const d = new Date(ts);
-  const now = new Date();
-  if (d.toDateString() === now.toDateString()) return d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes();
-  return d.getDate()+'/'+(d.getMonth()+1);
-}
-function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function getMyLink() {
-  return location.origin + '/?u=' + (user?.username || '');
+function goToAnonChat() {
+  document.getElementById('anon-msgs').innerHTML = '';
+  if (window._pendingMsg) {
+    appendMsg('anon-msgs', window._pendingMsg, true);
+    scrollMsgs('anon-msgs');
+  }
+  showScreen('s-anon-chat');
 }
 
-function copyLink() {
-  // Ouvrir le modal de partage au lieu de juste copier
-  openShareModal();
+async function loadAnonChat() {
+  connectSocket(true, anonToken);
+  // Remettre le badge à 0 pour cette conv
+  if (anonConvId && convsCache[anonConvId]) {
+    convsCache[anonConvId].unread = 0;
+    renderConvsFromCache();
+  }
+  showScreen('s-anon-chat');
+  document.getElementById('anon-msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Chargement...</div>';
+  try {
+    const res = await fetch(API + '/api/anon/messages/' + anonConvId + '?token=' + anonToken);
+    if (!res.ok) {
+      // Token invalide ou conv expirée — reset
+      anonToken = null; anonConvId = null;
+      localStorage.removeItem('sdk_anon_token');
+      localStorage.removeItem('sdk_anon_conv_id');
+      showScreen('s-anon');
+      return;
+    }
+    const msgs = await res.json();
+    document.getElementById('anon-msgs').innerHTML = '';
+    if (!msgs.length) {
+      document.getElementById('anon-msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">En attente de réponse... 👻</div>';
+    } else {
+      msgs.forEach(m => appendMsg('anon-msgs', m, !!m.from_anon));
+    }
+    scrollMsgs('anon-msgs');
+  } catch(e) { showScreen('s-anon'); }
 }
+
+async function sendAnonReply() {
+  const inp = document.getElementById('ac-inp');
+  const txt = inp.value.trim();
+  if (!txt || !anonConvId || !anonToken) return;
+  inp.value = '';
+  try {
+    const res = await fetch(API + '/api/anon/reply', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: txt, anon_token: anonToken, conv_id: anonConvId })
+    });
+    const msg = await res.json();
+    if (!res.ok) throw new Error(msg.error);
+    appendMsg('anon-msgs', msg, true); // l'anonyme a envoyé = "sent" de son point de vue
+    scrollMsgs('anon-msgs');
+  } catch(e) { showToast('❌ Erreur envoi'); }
+}
+
+// ─── INSCRIPTION DEPUIS PAGE ANONYME ─────────────────────────────────────────
+async function signupFromAnon() {
+  const errEl = document.getElementById('su-err');
+  errEl.textContent = '';
+  try {
+    const body = {
+      display_name: document.getElementById('su-dname').value.trim(),
+      username: document.getElementById('su-user').value.trim(),
+      password: document.getElementById('su-pass').value
+    };
+    const res = await fetch(API + '/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    token = data.token; user = data.user;
+    localStorage.setItem('sdk_token', token);
+    localStorage.setItem('sdk_user', JSON.stringify(user));
+    closeModal('signup-modal');
+    showToast('🎉 Compte créé ! Bienvenue ' + user.display_name + ' 💜');
+    // Nettoyer l'URL et aller sur l'app
+    if (location.search) history.replaceState({}, '', '/');
+    startApp();
+  } catch(e) { errEl.textContent = e.message; }
+}
+
+// ─── MESSAGES (commun owner + anon) ──────────────────────────────────────────
+function appendMsg(areaId, msg, isSent) {
+  const area = document.getElementById(areaId);
+  if (!area) return;
+  const time = fmtTime(typeof msg.sent_at === 'number' && msg.sent_at < 1e10 ? msg.sent_at * 1000 : msg.sent_at);
+  const div = document.createElement('div');
+  div.className = 'mrow ' + (isSent ? 'sent' : 'recv');
+  div.id = 'msg-' + msg.id;
+
+  let timerHtml = '';
+  if (!isSent && msg.expires_at) {
+    const expMs = (msg.expires_at < 1e10 ? msg.expires_at * 1000 : msg.expires_at);
+    timerHtml = `<div class="timer-bar-wrap" id="timer-${msg.id}"><div class="timer-bar-bg"><div class="timer-bar" id="bar-${msg.id}" style="width:100%"></div></div><span class="timer-label" id="tlabel-${msg.id}">⏳</span></div>`;
+    setTimeout(() => startMsgTimer(msg.id, expMs), 100);
+  }
+
+  div.innerHTML = `
+    <div class="bbl ${isSent ? 'sent' : 'recv'}">${escHtml(msg.content)}</div>
+    <div class="btime">${time}</div>
+    ${timerHtml}`;
+  area.appendChild(div);
+}
+
+// ─── TIMER ÉPHÉMÈRE ───────────────────────────────────────────────────────────
+function startMsgTimer(msgId, expiresAtMs) {
+  if (msgTimers[msgId]) clearInterval(msgTimers[msgId]);
+  function tick() {
+    const rem = expiresAtMs - Date.now();
+    const bar = document.getElementById('bar-' + msgId);
+    const label = document.getElementById('tlabel-' + msgId);
+    if (!bar) { clearInterval(msgTimers[msgId]); return; }
+    if (rem <= 0) {
+      clearInterval(msgTimers[msgId]);
+      const el = document.getElementById('msg-' + msgId);
+      if (el) { el.style.transition='opacity .8s,transform .8s'; el.style.opacity='0'; el.style.transform='scale(0.9)'; setTimeout(()=>el.remove(),800); }
+      return;
+    }
+    const pct = Math.max(0, (rem / (5*60*1000)) * 100);
+    bar.style.width = pct + '%';
+    if (pct < 20) bar.style.background = 'linear-gradient(90deg,#f87171,#ef4444)';
+    else if (pct < 50) bar.style.background = 'linear-gradient(90deg,#fb923c,#f97316)';
+    const s = Math.floor(rem/1000), m = Math.floor(s/60);
+    label.textContent = '⏳ ' + (m>0?m+'m':'') + (s%60) + 's';
+  }
+  tick();
+  msgTimers[msgId] = setInterval(tick, 1000);
+}
+
+// ─── PARTAGE ──────────────────────────────────────────────────────────────────
+function getMyLink() { return location.origin + '/?u=' + (user?.username || ''); }
 
 function openShareModal() {
-  const link = getMyLink();
-  document.getElementById('share-modal-link').textContent = link;
-  document.getElementById('share-modal').classList.add('on');
-}
-
-function closeShare() {
-  document.getElementById('share-modal').classList.remove('on');
+  document.getElementById('share-modal-link').textContent = getMyLink();
+  openModal('share-modal');
 }
 
 function copyShareLink() {
-  const link = getMyLink();
-  navigator.clipboard.writeText(link).then(() => {
-    showToast('🔗 Lien copié !');
-    closeShare();
-  }).catch(() => {
-    showToast('Lien : ' + link);
-  });
+  navigator.clipboard.writeText(getMyLink()).then(() => { showToast('🔗 Lien copié !'); closeModal('share-modal'); }).catch(() => showToast(getMyLink()));
 }
 
 function shareVia(network) {
   const link = getMyLink();
-  const name = user?.display_name || 'moi';
-  const msg = encodeURIComponent(`💜 Envoie-moi un message anonyme sur SDK Anon ! Tu peux me dire tout ce que tu veux, je ne saurai jamais qui tu es 👻\n${link}`);
+  const msg = encodeURIComponent('💜 Envoie-moi un message anonyme sur SDK Anon ! Je ne saurai jamais qui tu es 👻\n' + link);
   const urls = {
-    whatsapp: `https://wa.me/?text=${msg}`,
-    twitter:  `https://twitter.com/intent/tweet?text=${msg}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`,
-    telegram: `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${msg}`,
-    sms:      `sms:?body=${msg}`,
-    email:    `mailto:?subject=${encodeURIComponent('Envoie-moi un message anonyme 👻')}&body=${msg}`,
-    instagram: null, // Instagram ne permet pas le partage de lien direct
-    tiktok:    null,
+    whatsapp: 'https://wa.me/?text=' + msg,
+    twitter:  'https://twitter.com/intent/tweet?text=' + msg,
+    facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link),
+    telegram: 'https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + msg,
+    sms:      'sms:?body=' + msg,
+    email:    'mailto:?subject=' + encodeURIComponent('Envoie-moi un message anonyme 👻') + '&body=' + msg,
   };
-
   if (network === 'instagram' || network === 'tiktok') {
-    copyShareLink();
-    showToast('📋 Lien copié — colle-le dans ta bio ' + (network === 'instagram' ? 'Instagram' : 'TikTok') + ' !');
-    return;
+    navigator.clipboard.writeText(getMyLink()).catch(()=>{});
+    showToast('📋 Lien copié — colle-le dans ta bio ' + (network==='instagram'?'Instagram':'TikTok') + ' !');
+    closeModal('share-modal'); return;
   }
-
-  // Essayer la Web Share API en priorité sur mobile
-  if (network === 'whatsapp' && navigator.share) {
-    navigator.share({
-      title: 'SDK Anon — Messages anonymes',
-      text: `💜 Envoie-moi un message anonyme ! Tu peux me dire tout ce que tu veux, je ne saurai jamais qui tu es 👻`,
-      url: link
-    }).catch(() => window.open(urls.whatsapp, '_blank'));
-    return;
-  }
-
   if (urls[network]) window.open(urls[network], '_blank');
-  closeShare();
+  closeModal('share-modal');
 }
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function showScreen(id) { document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on')); document.getElementById(id).classList.add('on'); }
+
+function showSignupFromConfirm() {
+  // Pré-remplir les onglets sur "Créer un compte" et aller sur auth
+  isSignup = true;
+  document.getElementById('f-signup').style.display = 'block';
+  document.getElementById('f-login').style.display = 'none';
+  document.getElementById('auth-btn').textContent = 'Créer mon compte 🚀';
+  // Après auth, revenir dans le chat anon
+  window._afterAuthGoToAnonChat = true;
+  showScreen('s-auth');
+}
+
+function showLoginFromConfirm() {
+  isSignup = false;
+  document.getElementById('f-signup').style.display = 'none';
+  document.getElementById('f-login').style.display = 'block';
+  document.getElementById('auth-btn').textContent = 'Se connecter';
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.tab')[1].classList.add('on');
+  window._afterAuthGoToAnonChat = true;
+  showScreen('s-auth');
+}
+function showHome() { showScreen('s-home'); curConv=null; loadConvs(); }
+function openModal(id) { document.getElementById(id).classList.add('on'); }
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+function scrollMsgs(id) { const a=document.getElementById(id); if(a) a.scrollTop=a.scrollHeight; }
+function fmtTime(ts) { const d=new Date(ts),n=new Date(); return d.toDateString()===n.toDateString()?d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes():d.getDate()+'/'+(d.getMonth()+1); }
+function escHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 2800);
+  t.textContent = msg;
+  t.onclick = null;
+  t.style.cursor = 'default';
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 3000);
+}
+
+function showToastClickable(msg, cb) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.cursor = 'pointer';
+  t.onclick = () => { t.classList.remove('on'); cb(); };
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 6000);
 }
 </script>
 </body>
