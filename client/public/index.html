@@ -567,7 +567,9 @@ function renderConvs(convs) {
   }
   el.innerHTML = convs.map(c => {
     const sentByMe = c._sent_by_me;
-    const label = sentByMe ? ('Envoyé à @' + (anonTargetUser || '?')) : ('Anonyme ' + c.anon_label);
+    // Utiliser owner_username du cache si disponible
+    const ownerName = c.owner_username || anonTargetUser || '?';
+    const label = sentByMe ? ('Envoyé à @' + ownerName) : ('Anonyme ' + c.anon_label);
     const emoji = sentByMe ? '✉️' : c.anon_label.split(' ')[0];
     return `
     <div class="conv-item" data-cid="${c.id}" onclick="openConvById(this.dataset.cid)">
@@ -589,6 +591,12 @@ function openConvById(id) {
   if (!conv) { showToast('Réessaie...'); loadConvs(); return; }
   if (conv._sent_by_me) {
     // C'est une conv que j'ai commencée anonymement → ouvrir le chat anonyme
+    // S'assurer que anonConvId et anonToken sont bien définis
+    anonConvId = conv.id;
+    anonToken = conv.anon_token;
+    if (conv.owner_username) anonTargetUser = conv.owner_username;
+    localStorage.setItem('sdk_anon_conv_id', anonConvId);
+    localStorage.setItem('sdk_anon_token', anonToken);
     loadAnonChat();
   } else {
     // C'est une conv reçue → ouvrir le chat owner
@@ -709,18 +717,38 @@ function goToAnonChat() {
 }
 
 async function loadAnonChat() {
+  // Récupérer depuis localStorage si les variables sont perdues
+  if (!anonToken) anonToken = localStorage.getItem('sdk_anon_token');
+  if (!anonConvId) anonConvId = localStorage.getItem('sdk_anon_conv_id');
+
+  if (!anonToken || !anonConvId) {
+    // Pas de conv anonyme — retourner à la page d'envoi si on a un target
+    showScreen('s-anon');
+    return;
+  }
+
   connectSocket(true, anonToken);
-  // Remettre le badge à 0 pour cette conv
-  if (anonConvId && convsCache[anonConvId]) {
+
+  // Mettre à jour l'en-tête avec le bon username
+  if (!anonTargetUser && convsCache[anonConvId]?.owner_username) {
+    anonTargetUser = convsCache[anonConvId].owner_username;
+  }
+  if (anonTargetUser) {
+    document.getElementById('ac-target').textContent = '@' + anonTargetUser;
+  }
+
+  // Remettre le badge à 0
+  if (convsCache[anonConvId]) {
     convsCache[anonConvId].unread = 0;
     renderConvsFromCache();
   }
+
   showScreen('s-anon-chat');
   document.getElementById('anon-msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Chargement...</div>';
+
   try {
     const res = await fetch(API + '/api/anon/messages/' + anonConvId + '?token=' + anonToken);
     if (!res.ok) {
-      // Token invalide ou conv expirée — reset
       anonToken = null; anonConvId = null;
       localStorage.removeItem('sdk_anon_token');
       localStorage.removeItem('sdk_anon_conv_id');
@@ -735,7 +763,9 @@ async function loadAnonChat() {
       msgs.forEach(m => appendMsg('anon-msgs', m, !!m.from_anon));
     }
     scrollMsgs('anon-msgs');
-  } catch(e) { showScreen('s-anon'); }
+  } catch(e) {
+    document.getElementById('anon-msgs').innerHTML = '<div style="text-align:center;padding:30px;color:#f87171;font-size:13px;">Erreur — réessaie</div>';
+  }
 }
 
 async function sendAnonReply() {
