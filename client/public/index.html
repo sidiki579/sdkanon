@@ -360,22 +360,48 @@ let msgTimers = {};
   const params = new URLSearchParams(location.search);
   const u = params.get('u');
 
-  // PRIORITÉ 1 : si l'utilisateur est connecté, il va toujours sur son app
-  // même s'il arrive via un lien ?u=xxx (son propre lien ou celui de quelqu'un d'autre)
+  // PRIORITÉ 1 : utilisateur connecté → toujours son app
   if (token && user) {
-    // Nettoyer l'URL si besoin
     if (location.search) history.replaceState({}, '', '/');
     startApp();
     return;
   }
 
-  // PRIORITÉ 2 : visiteur anonyme arrivant via un lien
+  // PRIORITÉ 2 : visiteur anonyme arrivant via un lien ?u=xxx
   if (u) {
     showAnonLanding(u);
     return;
   }
 
-  // PRIORITÉ 3 : rien — afficher l'écran de connexion
+  // PRIORITÉ 3 : anonyme qui revient sans lien mais a déjà une conv en cours
+  // (il a fermé l'onglet et revient directement sur sdkanon.onrender.com)
+  if (anonToken && anonConvId) {
+    // Reconnecter le socket et afficher la conv dans la liste
+    connectSocket(true, anonToken);
+    // Charger les infos de la conv pour l'afficher dans la liste
+    fetch(API + '/api/anon/conv-info/' + anonConvId + '?token=' + anonToken)
+      .then(r => r.ok ? r.json() : null)
+      .then(info => {
+        if (info) {
+          anonTargetUser = info.owner_username;
+          document.getElementById('anon-target').textContent = '@' + info.owner_username;
+          document.getElementById('ac-target').textContent = '@' + info.owner_username;
+          convsCache[info.id] = info;
+          // Afficher l'écran home anonyme avec la conv
+          showAnonHome();
+        } else {
+          // Conv expirée ou token invalide
+          anonToken = null; anonConvId = null;
+          localStorage.removeItem('sdk_anon_token');
+          localStorage.removeItem('sdk_anon_conv_id');
+          showScreen('s-auth');
+        }
+      })
+      .catch(() => showScreen('s-auth'));
+    return;
+  }
+
+  // PRIORITÉ 4 : rien — écran de connexion
 })();
 
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
@@ -450,7 +476,7 @@ function startApp() {
 function connectSocket(isAnon = false, anonTok = null) {
   if (socket) socket.disconnect();
   const authObj = isAnon ? { anon_token: anonTok } : { token };
-  socket = io(API, { auth: authObj });
+  socket = io(API, { auth: authObj, reconnection: true, reconnectionAttempts: 10, reconnectionDelay: 1000 });
 
   socket.on('new_conversation_or_message', (data) => {
     showToast('💜 Nouveau message anonyme !');
@@ -493,7 +519,8 @@ function connectSocket(isAnon = false, anonTok = null) {
   });
 
   socket.on('owner_reply', (data) => {
-    // Réponse du propriétaire vers l'anonyme
+    // S'assurer qu'on a le bon conv_id depuis localStorage si besoin
+    if (!anonConvId) anonConvId = localStorage.getItem('sdk_anon_conv_id');
     if (anonConvId && data.conversation_id === anonConvId) {
       const anonChatOn = document.getElementById('s-anon-chat').classList.contains('on');
       if (anonChatOn) {
@@ -661,6 +688,22 @@ function previewAnonPage() {
   if (user) showAnonLanding(user.username);
 }
 
+function showAnonHome() {
+  // Afficher le home avec la conv anonyme dans la liste
+  // On réutilise l'écran home mais sans le header user
+  document.getElementById('h-ava').textContent = '👻';
+  document.getElementById('h-name').textContent = 'Mes conversations';
+  document.getElementById('h-handle').textContent = 'Mode anonyme';
+  document.getElementById('h-link').textContent = '';
+  // Cacher les boutons de partage
+  document.querySelector('.link-box-wrap').style.display = 'none';
+  showScreen('s-home');
+  renderConvsFromCache();
+  // Écouter les nouvelles réponses
+  document.getElementById('notif-dot').style.display =
+    Object.values(convsCache).some(c => c.unread > 0) ? 'inline-block' : 'none';
+}
+
 function goBackFromAnonChat() {
   // Si l'utilisateur est connecté → aller sur son profil
   if (token && user) {
@@ -688,10 +731,10 @@ async function sendFirstAnonMsg() {
     anonConvId = data.conv_id;
     localStorage.setItem('sdk_anon_token', anonToken);
     localStorage.setItem('sdk_anon_conv_id', anonConvId);
-    // Connecter le socket anonyme pour recevoir les réponses en temps réel
+    // Connecter le socket MAINTENANT pour recevoir les réponses en temps réel
     connectSocket(true, anonToken);
-    // Afficher l'écran de confirmation avant le chat
-    showSentConfirm(txt, data);
+    // Petit délai pour que la connexion socket soit établie avant l'écran suivant
+    setTimeout(() => showSentConfirm(txt, data), 300);
   } catch(e) {
     showToast('❌ ' + e.message);
   } finally {
