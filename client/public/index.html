@@ -15,7 +15,7 @@
   --brd:rgba(167,139,250,0.25);
 }
 html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color:var(--ton);overflow:hidden;}
-#app{height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative;}
+#app{height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;}
 .scr{display:none;flex-direction:column;height:100%;overflow:hidden;}
 .scr.on{display:flex;}
 
@@ -45,8 +45,6 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .home-body{flex:1;overflow-y:auto;padding:16px 16px 0;}
 .user-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--bc);border:1px solid var(--brd);border-radius:20px;margin-bottom:16px;}
 .ava{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--pbr),var(--pa2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0;}
-.uname{font-weight:600;font-size:15px;}
-.uhandle{font-size:12px;color:var(--tm);}
 .ib{background:transparent;border:none;color:var(--tm);cursor:pointer;padding:4px;border-radius:8px;display:flex;transition:color .2s;}
 .ib:hover{color:var(--ton);}
 .link-box-wrap{background:var(--bc);border:1px solid var(--brd);border-radius:20px;padding:16px;margin-bottom:16px;}
@@ -55,7 +53,6 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .ltext{flex:1;font-size:13px;color:var(--pa);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
 .chip{padding:10px;border-radius:12px;border:1px solid var(--brd);background:transparent;color:var(--ton);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s;}
-.chip:hover{background:rgba(167,139,250,0.1);}
 .chip.main{background:linear-gradient(135deg,var(--pbr),#9333ea);border-color:transparent;}
 .sec-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .ndot{width:7px;height:7px;border-radius:50%;background:var(--pa2);}
@@ -72,15 +69,12 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .empty{text-align:center;padding:40px 20px;color:var(--tm);}
 .empty .eico{font-size:40px;margin-bottom:10px;}
 .empty p{font-size:14px;line-height:1.6;}
-
-/* BOTTOM NAV */
 .bnav{display:flex;background:rgba(18,4,50,0.98);border-top:1px solid var(--brd);padding:10px 0 14px;}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--tm);cursor:pointer;font-family:'Outfit',sans-serif;font-size:10px;font-weight:500;padding:4px 0;transition:color .2s;}
 .ni.on,.ni:hover{color:var(--pa);}
 .ni i{font-size:20px;}
 
-/* CHAT COMMUN (owner + anon) */
-.chat-scr{background:var(--pd);}
+/* CHAT */
 .chat-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(15,6,33,0.95);border-bottom:1px solid var(--brd);flex-shrink:0;}
 .back{background:transparent;border:none;color:var(--tm);cursor:pointer;padding:4px;border-radius:10px;display:flex;}
 .chat-title{font-weight:600;font-size:14px;flex:1;}
@@ -90,8 +84,6 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .msgs{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:10px;}
 .notice{text-align:center;padding:6px 14px;}
 .notice span{background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.18);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--tm);}
-
-/* TIMER ÉPHÉMÈRE */
 .timer-bar-wrap{margin-top:4px;display:flex;align-items:center;gap:6px;}
 .timer-bar-bg{flex:1;height:3px;background:rgba(167,139,250,0.15);border-radius:3px;overflow:hidden;}
 .timer-bar{height:100%;background:linear-gradient(90deg,var(--pa2),var(--pbr));border-radius:3px;transition:width 1s linear;}
@@ -99,7 +91,6 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .mrow{display:flex;flex-direction:column;}
 .mrow.sent{align-items:flex-end;}
 .mrow.recv{align-items:flex-start;}
-.atag{font-size:11px;color:var(--pa);margin-bottom:2px;font-weight:600;}
 .bbl{max-width:78%;padding:10px 15px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word;}
 .bbl.sent{background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.12);color:var(--ton);border-bottom-right-radius:5px;}
 .bbl.recv{background:linear-gradient(135deg,var(--pbr),#9333ea);color:#fff;border-bottom-left-radius:5px;}
@@ -108,28 +99,17 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .cinput{flex:1;background:rgba(255,255,255,0.07);border:1px solid var(--brd);border-radius:22px;padding:10px 16px;color:var(--ton);font-family:'Outfit',sans-serif;font-size:14px;outline:none;}
 .cinput:focus{border-color:var(--pl);}
 .cinput::placeholder{color:rgba(196,181,253,0.35);}
-.sbtn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--pbr),var(--pa2));border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;}
-.sbtn:active{transform:scale(0.9);}
+.sbtn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--pbr),var(--pa2));border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-/* PAGE ANONYME — formulaire initial */
+/* PAGE ANONYME */
 #s-anon{background:radial-gradient(ellipse at 50% 0%,#4c1d95,var(--pd) 70%);align-items:center;justify-content:center;padding:24px 18px;}
 .anon-card{background:rgba(255,255,255,0.04);border:1px solid var(--brd);border-radius:26px;padding:32px 22px;text-align:center;width:100%;max-width:360px;}
-.atitle{font-size:22px;font-weight:700;margin-bottom:6px;}
-.asub{font-size:13px;color:var(--tm);margin-bottom:24px;line-height:1.6;}
 .atextbox{background:rgba(255,255,255,0.05);border:1px solid var(--brd);border-radius:14px;padding:16px;text-align:left;margin-bottom:14px;}
-.atextbox label{font-size:12px;color:var(--tm);font-weight:500;margin-bottom:8px;display:block;}
 .atextarea{width:100%;background:transparent;border:none;color:var(--ton);font-family:'Outfit',sans-serif;font-size:15px;resize:none;outline:none;min-height:80px;}
 .atextarea::placeholder{color:rgba(196,181,253,0.3);}
 .pnote{font-size:11px;color:var(--tm);margin-top:12px;display:flex;align-items:center;justify-content:center;gap:5px;}
 
-/* CHAT ANONYME — après envoi du 1er message */
-#s-anon-chat{background:var(--pd);}
-.anon-chat-hdr{display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(15,6,33,0.95);border-bottom:1px solid var(--brd);flex-shrink:0;}
-.anon-chat-info{flex:1;}
-.anon-chat-title{font-weight:600;font-size:14px;}
-.anon-chat-sub{font-size:11px;color:var(--tm);}
-
-/* MODAL INSCRIPTION */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
 .modal-overlay.on{opacity:1;pointer-events:all;}
 .bottom-sheet{background:#1a0933;border:1px solid var(--brd);border-radius:24px 24px 0 0;padding:28px 22px 40px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);}
@@ -137,8 +117,6 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .bs-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:6px;}
 .bs-sub{font-size:13px;color:var(--tm);text-align:center;margin-bottom:22px;line-height:1.6;}
 .modal-close{display:block;text-align:center;margin-top:16px;color:var(--tm);font-size:13px;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;width:100%;padding:4px;}
-
-/* SHARE MODAL */
 .share-networks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
 .share-net{display:flex;flex-direction:column;align-items:center;gap:5px;background:rgba(255,255,255,0.05);border:1px solid var(--brd);border-radius:14px;padding:12px 6px;cursor:pointer;transition:background .2s;}
 .share-net:hover{background:rgba(167,139,250,0.12);}
@@ -148,7 +126,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 
 /* TOAST */
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(91,33,182,0.97);border:1px solid var(--brd);border-radius:20px;padding:9px 20px;font-size:13px;font-weight:500;white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;max-width:90vw;text-align:center;}
-.toast.on{opacity:1;}
+.toast.on{opacity:1;pointer-events:all;}
 .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(167,139,250,0.3);border-top-color:var(--pl);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
@@ -156,7 +134,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 <body>
 <div id="app">
 
-<!-- ① AUTH -->
+<!-- AUTH -->
 <div id="s-auth" class="scr on">
   <div class="auth-wrap">
     <div class="logo">SDK<span>anon</span></div>
@@ -166,20 +144,20 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
       <button class="tab" onclick="setTab('login',this)">Connexion</button>
     </div>
     <div id="f-signup">
-      <div class="fld"><label>Nom affiché</label><input id="i-dname" placeholder="ex: Sophie M." /></div>
-      <div class="fld"><label>@pseudo unique</label><input id="i-user" placeholder="sophiem" /></div>
-      <div class="fld"><label>Mot de passe</label><input id="i-pass" type="password" placeholder="••••••••" /></div>
+      <div class="fld"><label>Nom affiché</label><input id="i-dname" placeholder="ex: Sophie M."/></div>
+      <div class="fld"><label>@pseudo unique</label><input id="i-user" placeholder="sophiem"/></div>
+      <div class="fld"><label>Mot de passe</label><input id="i-pass" type="password" placeholder="••••••••"/></div>
     </div>
     <div id="f-login" style="display:none;">
-      <div class="fld"><label>@pseudo</label><input id="l-user" placeholder="sophiem" /></div>
-      <div class="fld"><label>Mot de passe</label><input id="l-pass" type="password" placeholder="••••••••" /></div>
+      <div class="fld"><label>@pseudo</label><input id="l-user" placeholder="sophiem"/></div>
+      <div class="fld"><label>Mot de passe</label><input id="l-pass" type="password" placeholder="••••••••"/></div>
     </div>
     <div class="err" id="auth-err"></div>
     <button class="btn-p" id="auth-btn" onclick="doAuth()">Créer mon compte 🚀</button>
   </div>
 </div>
 
-<!-- ② HOME -->
+<!-- HOME (owner + anon home) -->
 <div id="s-home" class="scr">
   <div class="topbar">
     <div class="logo-sm">SDK<span>anon</span></div>
@@ -187,17 +165,17 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
   </div>
   <div class="home-body">
     <div class="user-card">
-      <div class="ava" id="h-ava">S</div>
+      <div class="ava" id="h-ava">👻</div>
       <div style="flex:1;">
-        <div class="uname" id="h-name">Sophie</div>
-        <div class="uhandle" id="h-handle">@sophiem</div>
+        <div style="font-weight:600;font-size:15px;" id="h-name">-</div>
+        <div style="font-size:12px;color:var(--tm);" id="h-handle">-</div>
       </div>
-      <button class="ib" onclick="logout()"><i class="ti ti-logout" style="font-size:18px;"></i></button>
+      <button class="ib" id="h-logout-btn" onclick="logout()"><i class="ti ti-logout" style="font-size:18px;"></i></button>
     </div>
-    <div class="link-box-wrap">
+    <div class="link-box-wrap" id="link-box-wrap">
       <div class="llabel"><i class="ti ti-link" style="font-size:14px;"></i>Ton lien anonyme</div>
       <div class="lrow">
-        <span class="ltext" id="h-link">sdkanon.app/@toi</span>
+        <span class="ltext" id="h-link"></span>
         <button class="ib" onclick="openShareModal()"><i class="ti ti-copy" style="font-size:16px;"></i></button>
       </div>
       <div class="share-row">
@@ -205,9 +183,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
         <button class="chip" onclick="previewAnonPage()"><i class="ti ti-eye" style="font-size:15px;"></i>Voir page</button>
       </div>
     </div>
-    <div class="sec-title">
-      Messages <span class="ndot" id="notif-dot" style="display:none;"></span>
-    </div>
+    <div class="sec-title">Messages <span class="ndot" id="notif-dot" style="display:none;"></span></div>
     <div class="conv-list" id="conv-list">
       <div class="empty"><div class="eico">👻</div><p>Partage ton lien pour recevoir<br>tes premiers messages anonymes !</p></div>
     </div>
@@ -219,8 +195,8 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
   </div>
 </div>
 
-<!-- ③ CHAT OWNER (toi qui réponds) -->
-<div id="s-chat" class="scr chat-scr">
+<!-- CHAT OWNER -->
+<div id="s-chat" class="scr" style="background:var(--pd);">
   <div class="chat-hdr">
     <button class="back" onclick="showHome()"><i class="ti ti-arrow-left" style="font-size:21px;"></i></button>
     <div style="flex:1;">
@@ -237,19 +213,19 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
   </div>
 </div>
 
-<!-- ④ PAGE ANONYME — formulaire d'envoi initial -->
+<!-- PAGE ANONYME — formulaire -->
 <div id="s-anon" class="scr">
   <div class="anon-card">
     <div style="font-size:46px;margin-bottom:12px;">👻</div>
-    <div class="atitle">Message pour<br><span id="anon-target" style="color:var(--pa);">@sophiem</span></div>
-    <div class="asub">Elle/il ne saura jamais qui tu es.<br>Messages supprimés 5 min après lecture.</div>
+    <div style="font-size:22px;font-weight:700;margin-bottom:6px;">Message pour<br><span id="anon-target" style="color:var(--pa);">@?</span></div>
+    <div style="font-size:13px;color:var(--tm);margin-bottom:24px;line-height:1.6;">Elle/il ne saura jamais qui tu es.<br>Messages supprimés 5 min après lecture.</div>
     <div class="atextbox">
-      <label>Ton message anonyme</label>
+      <label style="font-size:12px;color:var(--tm);font-weight:500;margin-bottom:8px;display:block;">Ton message anonyme</label>
       <textarea class="atextarea" id="anon-msg" placeholder="Écris ce que tu ressens vraiment..."></textarea>
     </div>
     <button class="btn-p" id="anon-send-btn" onclick="sendFirstAnonMsg()">Envoyer anonymement 💜</button>
-    <div class="pnote"><i class="ti ti-shield" style="font-size:13px;"></i>Identité 100% protégée · s'efface après lecture</div>
-    <div style="margin-top:16px;text-align:center;">
+    <div class="pnote"><i class="ti ti-shield" style="font-size:13px;"></i>Identité 100% protégée</div>
+    <div style="margin-top:14px;text-align:center;">
       <button onclick="showScreen('s-auth')" style="background:transparent;border:none;color:var(--tm);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;text-decoration:underline;">
         Tu as déjà un compte ? Connecte-toi
       </button>
@@ -257,45 +233,42 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
   </div>
 </div>
 
-<!-- ⑤ CHAT ANONYME — conversation en temps réel -->
-<div id="s-anon-chat" class="scr chat-scr">
-  <div class="anon-chat-hdr">
-    <button class="back" onclick="goBackFromAnonChat()"><i class="ti ti-arrow-left" style="font-size:21px;"></i></button>
+<!-- CHAT ANONYME -->
+<div id="s-anon-chat" class="scr" style="background:var(--pd);">
+  <div class="chat-hdr">
+    <button class="back" onclick="anonGoBack()"><i class="ti ti-arrow-left" style="font-size:21px;"></i></button>
     <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pbr),var(--pa2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👻</div>
-    <div class="anon-chat-info">
-      <div class="anon-chat-title">Conversation avec <span id="ac-target">@sophiem</span></div>
-      <div class="anon-chat-sub"><span class="odot"></span>anonyme · messages éphémères</div>
+    <div style="flex:1;margin-left:10px;">
+      <div style="font-weight:600;font-size:14px;">Conv avec <span id="ac-target">@?</span></div>
+      <div class="chat-sub"><span class="odot"></span>anonyme · éphémère</div>
     </div>
     <div class="anon-badge">🔒</div>
   </div>
-  <div class="notice"><span>⏱️ Les messages disparaissent 5 min après lecture</span></div>
+  <div class="notice"><span>⏱️ Messages supprimés 5 min après lecture</span></div>
   <div class="msgs" id="anon-msgs"></div>
   <div class="cinput-bar">
-    <input class="cinput" id="ac-inp" placeholder="Continuer la conversation..." onkeydown="if(event.key==='Enter')sendAnonReply()"/>
+    <input class="cinput" id="ac-inp" placeholder="Répondre..." onkeydown="if(event.key==='Enter')sendAnonReply()"/>
     <button class="sbtn" onclick="sendAnonReply()"><i class="ti ti-send" style="font-size:17px;"></i></button>
   </div>
 </div>
 
-<!-- ⑥ ÉCRAN CONFIRMATION ENVOI -->
-<div id="s-sent-confirm" class="scr" style="background:radial-gradient(ellipse at 50% 0%,#4c1d95,var(--pd) 70%);align-items:center;justify-content:center;padding:24px 18px;">
-  <div class="anon-card" style="text-align:center;">
+<!-- ÉCRAN CONFIRMATION ENVOI -->
+<div id="s-confirm" class="scr" style="background:radial-gradient(ellipse at 50% 0%,#4c1d95,var(--pd) 70%);align-items:center;justify-content:center;padding:24px 18px;">
+  <div class="anon-card">
     <div style="font-size:52px;margin-bottom:16px;">💜</div>
     <div style="font-size:22px;font-weight:700;margin-bottom:8px;">Message envoyé !</div>
     <div style="font-size:14px;color:var(--tm);margin-bottom:28px;line-height:1.6;">
-      Ton message a été envoyé à <span id="sc-target" style="color:var(--pa);font-weight:600;">@?</span><br>
-      Il disparaîtra 5 min après avoir été lu.
+      Envoyé à <span id="sc-target" style="color:var(--pa);font-weight:600;">@?</span><br>
+      Disparaîtra 5 min après lecture.
     </div>
-
-    <!-- Proposition inscription/connexion -->
     <div style="background:rgba(124,58,237,0.15);border:1px solid var(--brd);border-radius:16px;padding:18px;margin-bottom:16px;">
       <div style="font-size:13px;font-weight:600;margin-bottom:6px;">👀 Tu veux voir si on te répond ?</div>
-      <div style="font-size:12px;color:var(--tm);margin-bottom:14px;">Crée un compte ou connecte-toi pour recevoir les réponses.</div>
+      <div style="font-size:12px;color:var(--tm);margin-bottom:14px;">Crée un compte pour recevoir les réponses.</div>
       <div style="display:flex;gap:10px;">
-        <button class="btn-p" style="flex:1;padding:10px;font-size:13px;" onclick="showSignupFromConfirm()">Créer un compte</button>
-        <button class="chip" style="flex:1;padding:10px;font-size:13px;" onclick="showLoginFromConfirm()">Se connecter</button>
+        <button class="btn-p" style="flex:1;padding:10px;font-size:13px;" onclick="confirmGoSignup()">Créer un compte</button>
+        <button class="chip" style="flex:1;padding:10px;font-size:13px;" onclick="confirmGoLogin()">Se connecter</button>
       </div>
     </div>
-
     <button onclick="goToAnonChat()" style="background:transparent;border:none;color:var(--tm);font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;text-decoration:underline;padding:8px;">
       Continuer sans compte →
     </button>
@@ -324,14 +297,14 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
   </div>
 </div>
 
-<!-- MODAL INSCRIPTION ANONYME -->
+<!-- MODAL INSCRIPTION depuis chat anon -->
 <div class="modal-overlay" id="signup-modal" onclick="if(event.target===this)closeModal('signup-modal')">
   <div class="bottom-sheet">
     <div class="bs-title">💜 Crée ton compte</div>
-    <div class="bs-sub">Pour ne pas perdre tes conversations et recevoir des notifications quand on te répond !</div>
-    <div class="fld"><label>Nom affiché</label><input id="su-dname" placeholder="ex: Alex" /></div>
-    <div class="fld"><label>@pseudo unique</label><input id="su-user" placeholder="alex123" /></div>
-    <div class="fld"><label>Mot de passe</label><input id="su-pass" type="password" placeholder="••••••••" /></div>
+    <div class="bs-sub">Pour recevoir des notifications quand on te répond !</div>
+    <div class="fld"><label>Nom affiché</label><input id="su-dname" placeholder="ex: Alex"/></div>
+    <div class="fld"><label>@pseudo unique</label><input id="su-user" placeholder="alex123"/></div>
+    <div class="fld"><label>Mot de passe</label><input id="su-pass" type="password" placeholder="••••••••"/></div>
     <div class="err" id="su-err"></div>
     <button class="btn-p" onclick="signupFromAnon()">Créer mon compte 🚀</button>
     <button class="modal-close" onclick="closeModal('signup-modal')">Plus tard</button>
@@ -342,67 +315,147 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 
 <script>
 const API = window.location.origin;
-let token = localStorage.getItem('sdk_token');
-let user = JSON.parse(localStorage.getItem('sdk_user') || 'null');
-let socket = null;
-let curConv = null;
-let convsCache = {};
-let isSignup = true;
 
-// Token anonyme : identifie l'anonyme sans compte
-let anonToken = localStorage.getItem('sdk_anon_token');
-let anonConvId = localStorage.getItem('sdk_anon_conv_id');
-let anonTargetUser = null; // username du propriétaire du lien
+// ─── ÉTAT GLOBAL ──────────────────────────────────────────────────────────────
+let token     = localStorage.getItem('sdk_token');
+let user      = JSON.parse(localStorage.getItem('sdk_user') || 'null');
+let socket    = null;
+let curConv   = null;       // conv owner actuellement ouverte
+let convsCache = {};
+let isSignup  = true;
 let msgTimers = {};
+
+// Côté anonyme
+let anonToken    = localStorage.getItem('sdk_anon_token');
+let anonConvId   = localStorage.getItem('sdk_anon_conv_id');
+let anonTarget   = localStorage.getItem('sdk_anon_target') || null; // @username du destinataire
+let pendingMsg   = null;    // message en attente d'affichage
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 (function init() {
-  const params = new URLSearchParams(location.search);
-  const u = params.get('u');
+  const u = new URLSearchParams(location.search).get('u');
 
-  // PRIORITÉ 1 : utilisateur connecté → toujours son app
+  // 1. Utilisateur connecté → toujours son app
   if (token && user) {
     if (location.search) history.replaceState({}, '', '/');
-    startApp();
+    startOwnerApp();
     return;
   }
 
-  // PRIORITÉ 2 : visiteur anonyme arrivant via un lien ?u=xxx
+  // 2. Lien anonyme ?u=xxx
   if (u) {
-    showAnonLanding(u);
+    anonTarget = u;
+    localStorage.setItem('sdk_anon_target', u);
+    // S'il a déjà une conv en cours avec cette personne → chat direct
+    if (anonToken && anonConvId) {
+      startAnonApp();
+    } else {
+      document.getElementById('anon-target').textContent = '@' + u;
+      showScreen('s-anon');
+    }
     return;
   }
 
-  // PRIORITÉ 3 : anonyme qui revient sans lien mais a déjà une conv en cours
-  // (il a fermé l'onglet et revient directement sur sdkanon.onrender.com)
-  if (anonToken && anonConvId) {
-    // Reconnecter le socket et afficher la conv dans la liste
-    connectSocket(true, anonToken);
-    // Charger les infos de la conv pour l'afficher dans la liste
-    fetch(API + '/api/anon/conv-info/' + anonConvId + '?token=' + anonToken)
-      .then(r => r.ok ? r.json() : null)
-      .then(info => {
-        if (info) {
-          anonTargetUser = info.owner_username;
-          document.getElementById('anon-target').textContent = '@' + info.owner_username;
-          document.getElementById('ac-target').textContent = '@' + info.owner_username;
-          convsCache[info.id] = info;
-          // Afficher l'écran home anonyme avec la conv
-          showAnonHome();
-        } else {
-          // Conv expirée ou token invalide
-          anonToken = null; anonConvId = null;
-          localStorage.removeItem('sdk_anon_token');
-          localStorage.removeItem('sdk_anon_conv_id');
-          showScreen('s-auth');
-        }
-      })
-      .catch(() => showScreen('s-auth'));
+  // 3. Anonyme qui revient (a déjà une conv)
+  if (anonToken && anonConvId && anonTarget) {
+    startAnonApp();
     return;
   }
 
-  // PRIORITÉ 4 : rien — écran de connexion
+  // 4. Rien → auth
 })();
+
+// ─── DÉMARRAGE APP OWNER ──────────────────────────────────────────────────────
+function startOwnerApp() {
+  document.getElementById('h-ava').textContent = user.display_name[0].toUpperCase();
+  document.getElementById('h-name').textContent = user.display_name;
+  document.getElementById('h-handle').textContent = '@' + user.username;
+  document.getElementById('h-link').textContent = location.host + '/?u=' + user.username;
+  document.getElementById('link-box-wrap').style.display = '';
+  document.getElementById('h-logout-btn').style.display = '';
+  connectSocket({ token });
+  loadOwnerConvs();
+  showScreen('s-home');
+}
+
+// ─── DÉMARRAGE APP ANONYME ────────────────────────────────────────────────────
+function startAnonApp() {
+  // Connecter le socket anonyme UNE SEULE FOIS
+  connectSocket({ anon_token: anonToken });
+  // Afficher le home anonyme
+  document.getElementById('h-ava').textContent = '👻';
+  document.getElementById('h-name').textContent = 'Mes messages';
+  document.getElementById('h-handle').textContent = 'Mode anonyme';
+  document.getElementById('link-box-wrap').style.display = 'none';
+  document.getElementById('h-logout-btn').style.display = 'none';
+  showScreen('s-home');
+  loadAnonConv();
+}
+
+// ─── SOCKET — UN SEUL connectSocket, jamais rappelé ──────────────────────────
+function connectSocket(authObj) {
+  if (socket) socket.disconnect();
+  socket = io(API, {
+    auth: authObj,
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000
+  });
+
+  socket.on('connect', () => console.log('Socket connecté:', socket.id));
+  socket.on('disconnect', () => console.log('Socket déconnecté'));
+
+  // ── OWNER : nouveau message reçu ──
+  socket.on('new_conversation_or_message', (data) => {
+    showToast('💜 Nouveau message anonyme !');
+    document.getElementById('notif-dot').style.display = 'inline-block';
+    // Ajouter/MAJ dans le cache
+    convsCache[data.convId] = {
+      ...(convsCache[data.convId] || {}),
+      id: data.convId,
+      anon_label: data.anonLabel,
+      last_msg: data.message.content,
+      last_time: Math.floor(data.message.sent_at / 1000),
+      unread: (convsCache[data.convId]?.unread || 0) + 1
+    };
+    renderConvs();
+    // Si la conv est ouverte → ajouter le message directement
+    if (curConv && curConv.id === data.convId) {
+      addMsg('msgs', data.message, true);
+    }
+  });
+
+  // ── ANONYME : réponse du propriétaire ──
+  socket.on('owner_reply', (data) => {
+    // Toujours mettre à jour anonConvId depuis le message reçu si besoin
+    if (!anonConvId && data.conversation_id) {
+      anonConvId = data.conversation_id;
+      localStorage.setItem('sdk_anon_conv_id', anonConvId);
+    }
+    const chatVisible = document.getElementById('s-anon-chat').classList.contains('on');
+    if (chatVisible) {
+      addMsg('anon-msgs', data, false);
+      scrollMsgs('anon-msgs');
+    } else {
+      // Mettre à jour le badge dans la liste
+      if (anonConvId) {
+        convsCache[anonConvId] = {
+          ...(convsCache[anonConvId] || { id: anonConvId, _sent_by_me: true, _anon_token: anonToken }),
+          unread: (convsCache[anonConvId]?.unread || 0) + 1,
+          last_msg: data.content,
+          last_time: Math.floor((data.sent_at||Date.now()) / 1000)
+        };
+      }
+      renderConvs();
+      document.getElementById('notif-dot').style.display = 'inline-block';
+      showToastClickable('💜 Réponse reçue ! Clique pour voir', () => openAnonChat());
+    }
+  });
+
+  socket.on('message_timer_started', ({ messageId, expiresAt }) => {
+    startTimer(messageId, expiresAt);
+  });
+}
 
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
 function setTab(t, el) {
@@ -410,277 +463,188 @@ function setTab(t, el) {
   document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
   el.classList.add('on');
   document.getElementById('f-signup').style.display = isSignup ? 'block' : 'none';
-  document.getElementById('f-login').style.display = isSignup ? 'none' : 'block';
+  document.getElementById('f-login').style.display  = isSignup ? 'none'  : 'block';
   document.getElementById('auth-btn').textContent = isSignup ? 'Créer mon compte 🚀' : 'Se connecter';
   document.getElementById('auth-err').textContent = '';
 }
 
 async function doAuth() {
   const btn = document.getElementById('auth-btn');
-  const errEl = document.getElementById('auth-err');
-  errEl.textContent = '';
+  const err = document.getElementById('auth-err');
+  err.textContent = '';
   btn.innerHTML = '<span class="spin"></span>Chargement...';
   btn.disabled = true;
   try {
-    let body, url;
-    if (isSignup) {
-      url = API + '/api/register';
-      body = { display_name: document.getElementById('i-dname').value.trim(), username: document.getElementById('i-user').value.trim(), password: document.getElementById('i-pass').value };
-    } else {
-      url = API + '/api/login';
-      body = { username: document.getElementById('l-user').value.trim(), password: document.getElementById('l-pass').value };
-    }
-    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const url  = isSignup ? API+'/api/register' : API+'/api/login';
+    const body = isSignup
+      ? { display_name: g('i-dname').value.trim(), username: g('i-user').value.trim(), password: g('i-pass').value }
+      : { username: g('l-user').value.trim(), password: g('l-pass').value };
+    const res  = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Erreur');
+    if (!res.ok) throw new Error(data.error);
     token = data.token; user = data.user;
     localStorage.setItem('sdk_token', token);
     localStorage.setItem('sdk_user', JSON.stringify(user));
-    // Si on était sur une page anonyme (?u=xxx), on nettoie l'URL avant de démarrer
     if (location.search) history.replaceState({}, '', '/');
-    if (window._afterAuthGoToAnonChat && anonToken && anonConvId) {
-      window._afterAuthGoToAnonChat = false;
-      startApp(); // Charger le profil
-      setTimeout(() => loadAnonChat(), 500); // Puis ouvrir le chat anon
-    } else {
-      startApp();
-    }
+    startOwnerApp();
   } catch(e) {
-    errEl.textContent = e.message;
+    err.textContent = e.message;
   } finally {
     btn.disabled = false;
     btn.textContent = isSignup ? 'Créer mon compte 🚀' : 'Se connecter';
   }
 }
 
+async function signupFromAnon() {
+  const err = document.getElementById('su-err');
+  err.textContent = '';
+  try {
+    const body = { display_name: g('su-dname').value.trim(), username: g('su-user').value.trim(), password: g('su-pass').value };
+    const res  = await fetch(API+'/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    token = data.token; user = data.user;
+    localStorage.setItem('sdk_token', token);
+    localStorage.setItem('sdk_user', JSON.stringify(user));
+    closeModal('signup-modal');
+    showToast('🎉 Compte créé ! Bienvenue ' + user.display_name);
+    // Rester dans le chat anonyme — juste changer le socket
+    connectSocket({ token });
+    setTimeout(() => openAnonChat(), 500);
+  } catch(e) { err.textContent = e.message; }
+}
+
 function logout() {
   localStorage.clear();
-  token = null; user = null;
+  token = null; user = null; anonToken = null; anonConvId = null; anonTarget = null;
   if (socket) socket.disconnect();
-  showScreen('s-auth');
+  location.reload();
 }
 
-// ─── APP DÉMARRAGE ────────────────────────────────────────────────────────────
-function startApp() {
-  document.getElementById('h-ava').textContent = user.display_name[0].toUpperCase();
-  document.getElementById('h-name').textContent = user.display_name;
-  document.getElementById('h-handle').textContent = '@' + user.username;
-  document.getElementById('h-link').textContent = location.host + '/?u=' + user.username;
-  document.getElementById('anon-target').textContent = '@' + user.username;
-  connectSocket();
-  loadConvs();
-  showScreen('s-home');
-}
-
-// ─── SOCKET ───────────────────────────────────────────────────────────────────
-function connectSocket(isAnon = false, anonTok = null) {
-  if (socket) socket.disconnect();
-  const authObj = isAnon ? { anon_token: anonTok } : { token };
-  socket = io(API, { auth: authObj, reconnection: true, reconnectionAttempts: 10, reconnectionDelay: 1000 });
-
-  socket.on('new_conversation_or_message', (data) => {
-    showToast('💜 Nouveau message anonyme !');
-    document.getElementById('notif-dot').style.display = 'inline-block';
-    // Mettre à jour la conv dans le cache
-    if (convsCache[data.convId]) {
-      convsCache[data.convId].last_msg = data.message.content;
-      convsCache[data.convId].last_time = Math.floor(data.message.sent_at / 1000);
-      convsCache[data.convId].unread = (convsCache[data.convId].unread || 0) + 1;
-    } else {
-      // Nouvelle conversation — l'ajouter au cache
-      convsCache[data.convId] = {
-        id: data.convId,
-        anon_label: data.anonLabel,
-        anon_token: '',
-        last_msg: data.message.content,
-        last_time: Math.floor(data.message.sent_at / 1000),
-        unread: 1
-      };
-    }
-    // Rafraîchir la liste depuis le serveur pour avoir les données complètes
-    loadConvs();
-    // Si la conv est déjà ouverte, ajouter le message directement
-    if (curConv && curConv.id === data.convId) {
-      appendMsg('msgs', data.message, true);
-      scrollMsgs('msgs');
-    }
-  });
-
-  socket.on('new_message', (data) => {
-    // Message reçu côté anonyme (réponse du propriétaire)
-    if (anonConvId && data.conversation_id === anonConvId) {
-      appendMsg('anon-msgs', data, false /* du point de vue anon, c'est "reçu" */);
-      showToast('💜 Tu as reçu une réponse !');
-    }
-    // Message reçu côté owner dans le chat ouvert
-    if (curConv && data.conversation_id === curConv.id) {
-      appendMsg('msgs', data, true);
-    }
-  });
-
-  socket.on('owner_reply', (data) => {
-    // S'assurer qu'on a le bon conv_id depuis localStorage si besoin
-    if (!anonConvId) anonConvId = localStorage.getItem('sdk_anon_conv_id');
-    if (anonConvId && data.conversation_id === anonConvId) {
-      const anonChatOn = document.getElementById('s-anon-chat').classList.contains('on');
-      if (anonChatOn) {
-        appendMsg('anon-msgs', data, false);
-        scrollMsgs('anon-msgs');
-      } else {
-        // Mettre à jour le cache et re-render la liste avec badge
-        if (convsCache[anonConvId]) {
-          convsCache[anonConvId].unread = (convsCache[anonConvId].unread || 0) + 1;
-          convsCache[anonConvId].last_msg = data.content;
-          convsCache[anonConvId].last_time = Math.floor(data.sent_at / 1000);
-        } else {
-          // Créer l'entrée dans le cache si elle n'existe pas encore
-          convsCache[anonConvId] = {
-            id: anonConvId,
-            anon_label: '👻',
-            _sent_by_me: true,
-            last_msg: data.content,
-            last_time: Math.floor(data.sent_at / 1000),
-            unread: 1
-          };
-        }
-        // Forcer le rechargement depuis le serveur pour avoir le label correct
-        loadConvs();
-        document.getElementById('notif-dot').style.display = 'inline-block';
-        showToastClickable('💜 Réponse reçue ! Clique pour voir', () => loadAnonChat());
-      }
-    }
-  });
-
-  socket.on('message_timer_started', ({ messageId, expiresAt }) => {
-    startMsgTimer(messageId, expiresAt);
-  });
-}
-
-// ─── CONVERSATIONS (OWNER) ────────────────────────────────────────────────────
-async function loadConvs() {
+// ─── CONVS OWNER ─────────────────────────────────────────────────────────────
+async function loadOwnerConvs() {
   try {
-    // Charger les convs reçues (owner)
-    const res = await fetch(API + '/api/conversations', { headers: { 'Authorization': 'Bearer ' + token } });
-    const ownerConvs = await res.json();
-
-    // Charger les convs que j'ai commencées anonymement (si j'ai un anonToken)
-    let anonConvs = [];
-    if (anonToken && anonConvId) {
-      try {
-        const r2 = await fetch(API + '/api/anon/conv-info/' + anonConvId + '?token=' + anonToken);
-        if (r2.ok) {
-          const info = await r2.json();
-          // Marquer comme conv "envoyée par moi"
-          info._sent_by_me = true;
-          anonConvs = [info];
-        }
-      } catch(e) {}
-    }
-
-    // Fusionner et trier par date
-    const all = [...ownerConvs, ...anonConvs].sort((a,b) => (b.last_time||0) - (a.last_time||0));
-    all.forEach(c => convsCache[c.id] = c);
-    renderConvs(all);
-    const hasUnread = all.some(c => c.unread > 0);
-    document.getElementById('notif-dot').style.display = hasUnread ? 'inline-block' : 'none';
+    const res   = await fetch(API+'/api/conversations', { headers:{'Authorization':'Bearer '+token} });
+    const convs = await res.json();
+    convs.forEach(c => convsCache[c.id] = c);
+    renderConvs();
   } catch(e) { console.error(e); }
 }
 
-function renderConvs(convs) {
-  const el = document.getElementById('conv-list');
+// ─── CONV ANONYME ─────────────────────────────────────────────────────────────
+async function loadAnonConv() {
+  try {
+    const res  = await fetch(API+'/api/anon/conv-info/'+anonConvId+'?token='+anonToken);
+    if (!res.ok) { resetAnonState(); return; }
+    const info = await res.json();
+    info._sent_by_me  = true;
+    info._anon_token  = anonToken;  // CRUCIAL pour openConvById
+    info.anon_token   = anonToken;  // double sauvegarde
+    convsCache[info.id] = info;
+    if (info.owner_username) anonTarget = info.owner_username;
+    renderConvs();
+    document.getElementById('notif-dot').style.display =
+      info.unread > 0 ? 'inline-block' : 'none';
+  } catch(e) {}
+}
+
+function resetAnonState() {
+  anonToken = null; anonConvId = null; anonTarget = null;
+  localStorage.removeItem('sdk_anon_token');
+  localStorage.removeItem('sdk_anon_conv_id');
+  localStorage.removeItem('sdk_anon_target');
+}
+
+// ─── RENDU LISTE ─────────────────────────────────────────────────────────────
+function renderConvs() {
+  const el    = document.getElementById('conv-list');
+  const convs = Object.values(convsCache).sort((a,b) => (b.last_time||0)-(a.last_time||0));
   if (!convs.length) {
     el.innerHTML = '<div class="empty"><div class="eico">👻</div><p>Partage ton lien pour recevoir<br>tes premiers messages anonymes !</p></div>';
     return;
   }
   el.innerHTML = convs.map(c => {
-    const sentByMe = c._sent_by_me;
-    // Utiliser owner_username du cache si disponible
-    const ownerName = c.owner_username || anonTargetUser || '?';
-    const label = sentByMe ? ('Envoyé à @' + ownerName) : ('Anonyme ' + c.anon_label);
-    const emoji = sentByMe ? '✉️' : c.anon_label.split(' ')[0];
-    return `
-    <div class="conv-item" data-cid="${c.id}" onclick="openConvById(this.dataset.cid)">
-      <div class="conv-ava" style="${sentByMe ? 'background:rgba(232,121,249,0.18)' : ''}">${emoji}</div>
+    const byMe  = c._sent_by_me;
+    const owner = c.owner_username || anonTarget || '?';
+    const label = byMe ? ('Envoyé à @'+owner) : ('Anonyme '+c.anon_label);
+    const emoji = byMe ? '✉️' : (c.anon_label||'👻').split(' ')[0];
+    return `<div class="conv-item" data-cid="${c.id}" onclick="openConvById('${c.id}')">
+      <div class="conv-ava">${emoji}</div>
       <div class="conv-info">
         <div class="conv-name">${label}</div>
-        <div class="conv-prev">${c.last_msg ? escHtml(c.last_msg) : '...'}</div>
+        <div class="conv-prev">${c.last_msg ? esc(c.last_msg) : '...'}</div>
       </div>
       <div class="conv-meta">
-        <span class="conv-time">${c.last_time ? fmtTime(c.last_time * 1000) : ''}</span>
-        ${c.unread ? `<span class="ubadge">${c.unread}</span>` : ''}
+        <span class="conv-time">${c.last_time ? fmtTime(c.last_time*1000) : ''}</span>
+        ${c.unread>0 ? `<span class="ubadge">${c.unread}</span>` : ''}
       </div>
     </div>`;
   }).join('');
+  const hasUnread = convs.some(c => c.unread > 0);
+  document.getElementById('notif-dot').style.display = hasUnread ? 'inline-block' : 'none';
 }
 
 function openConvById(id) {
   const conv = convsCache[id];
-  if (!conv) { showToast('Réessaie...'); loadConvs(); return; }
+  if (!conv) return;
   if (conv._sent_by_me) {
-    // C'est une conv que j'ai commencée anonymement → ouvrir le chat anonyme
-    // S'assurer que anonConvId et anonToken sont bien définis
+    // Conv envoyée par moi → chat anonyme
     anonConvId = conv.id;
-    anonToken = conv.anon_token;
-    if (conv.owner_username) anonTargetUser = conv.owner_username;
+    anonToken  = conv._anon_token || conv.anon_token || anonToken;
+    // Toujours resauvegarder dans localStorage
+    localStorage.setItem('sdk_anon_token',   anonToken);
     localStorage.setItem('sdk_anon_conv_id', anonConvId);
-    localStorage.setItem('sdk_anon_token', anonToken);
-    loadAnonChat();
+    if (conv.owner_username) anonTarget = conv.owner_username;
+    localStorage.setItem('sdk_anon_conv_id', anonConvId);
+    localStorage.setItem('sdk_anon_token',   anonToken);
+    openAnonChat();
   } else {
-    // C'est une conv reçue → ouvrir le chat owner
-    openConv(conv);
+    openOwnerChat(conv);
   }
 }
 
-async function openConv(conv) {
+// ─── CHAT OWNER ───────────────────────────────────────────────────────────────
+async function openOwnerChat(conv) {
   curConv = conv;
   document.getElementById('c-title').textContent = 'Anonyme ' + conv.anon_label;
   document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Chargement...</div>';
   showScreen('s-chat');
   try {
-    const res = await fetch(API + '/api/conversations/' + conv.id + '/messages', { headers: { 'Authorization': 'Bearer ' + token } });
-    if (!res.ok) throw new Error('Erreur ' + res.status);
+    const res  = await fetch(API+'/api/conversations/'+conv.id+'/messages', { headers:{'Authorization':'Bearer '+token} });
     const msgs = await res.json();
     document.getElementById('msgs').innerHTML = '';
-    if (!msgs.length) {
-      document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Aucun message</div>';
-    } else {
-      msgs.forEach(m => appendMsg('msgs', m, !!m.from_anon));
-    }
+    msgs.forEach(m => addMsg('msgs', m, !!m.from_anon));
     scrollMsgs('msgs');
-    loadConvs();
+    // RAZ badge
+    if (convsCache[conv.id]) { convsCache[conv.id].unread = 0; renderConvs(); }
   } catch(e) {
-    document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:#f87171;font-size:13px;">Erreur — réessaie</div>';
+    document.getElementById('msgs').innerHTML = '<div style="text-align:center;padding:30px;color:#f87171;">Erreur — réessaie</div>';
   }
 }
 
 async function sendOwnerMsg() {
-  const inp = document.getElementById('c-inp');
-  const txt = inp.value.trim();
+  const inp = g('c-inp'), txt = inp.value.trim();
   if (!txt || !curConv) return;
   inp.value = '';
   try {
-    const res = await fetch(API + '/api/conversations/' + curConv.id + '/messages', {
-      method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    const res = await fetch(API+'/api/conversations/'+curConv.id+'/messages', {
+      method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
       body: JSON.stringify({ content: txt })
     });
     const msg = await res.json();
-    appendMsg('msgs', msg, false);
+    addMsg('msgs', msg, false);
     scrollMsgs('msgs');
-    loadConvs();
+    if (convsCache[curConv.id]) { convsCache[curConv.id].last_msg = txt; renderConvs(); }
   } catch(e) { showToast('❌ Erreur envoi'); }
 }
 
-// ─── PAGE ANONYME ─────────────────────────────────────────────────────────────
-function showAnonLanding(username) {
-  anonTargetUser = username;
-  document.getElementById('anon-target').textContent = '@' + username;
-  document.getElementById('ac-target').textContent = '@' + username;
+function showHome() { showScreen('s-home'); curConv = null; loadOwnerConvs(); }
 
-  // Si l'anonyme a déjà une conv avec cette personne, aller direct dans le chat
-  if (anonToken && anonConvId) {
-    loadAnonChat();
-    return;
-  }
+// ─── PAGE ANONYME ─────────────────────────────────────────────────────────────
+function showAnonLanding(u) {
+  anonTarget = u;
+  localStorage.setItem('sdk_anon_target', u);
+  document.getElementById('anon-target').textContent = '@' + u;
   showScreen('s-anon');
 }
 
@@ -688,53 +652,36 @@ function previewAnonPage() {
   if (user) showAnonLanding(user.username);
 }
 
-function showAnonHome() {
-  // Afficher le home avec la conv anonyme dans la liste
-  // On réutilise l'écran home mais sans le header user
-  document.getElementById('h-ava').textContent = '👻';
-  document.getElementById('h-name').textContent = 'Mes conversations';
-  document.getElementById('h-handle').textContent = 'Mode anonyme';
-  document.getElementById('h-link').textContent = '';
-  // Cacher les boutons de partage
-  document.querySelector('.link-box-wrap').style.display = 'none';
-  showScreen('s-home');
-  renderConvsFromCache();
-  // Écouter les nouvelles réponses
-  document.getElementById('notif-dot').style.display =
-    Object.values(convsCache).some(c => c.unread > 0) ? 'inline-block' : 'none';
-}
-
-function goBackFromAnonChat() {
-  // Si l'utilisateur est connecté → aller sur son profil
-  if (token && user) {
-    if (location.search) history.replaceState({}, '', '/');
-    startApp();
-    return;
-  }
-  // Sinon retourner sur la page d'envoi anonyme
-  showScreen('s-anon');
-}
-
 async function sendFirstAnonMsg() {
-  const txt = document.getElementById('anon-msg').value.trim();
+  const txt = g('anon-msg').value.trim();
   if (!txt) { showToast('✏️ Écris un message d\'abord'); return; }
-  const btn = document.getElementById('anon-send-btn');
+  const btn = g('anon-send-btn');
   btn.innerHTML = '<span class="spin"></span>Envoi...'; btn.disabled = true;
   try {
-    const res = await fetch(API + '/api/anon/send/' + anonTargetUser, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+    const res  = await fetch(API+'/api/anon/send/'+anonTarget, {
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ content: txt, anon_token: anonToken })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
-    anonToken = data.anon_token;
+    // Sauvegarder les identifiants anonymes
+    anonToken  = data.anon_token;
     anonConvId = data.conv_id;
-    localStorage.setItem('sdk_anon_token', anonToken);
+    localStorage.setItem('sdk_anon_token',  anonToken);
     localStorage.setItem('sdk_anon_conv_id', anonConvId);
-    // Connecter le socket MAINTENANT pour recevoir les réponses en temps réel
-    connectSocket(true, anonToken);
-    // Petit délai pour que la connexion socket soit établie avant l'écran suivant
-    setTimeout(() => showSentConfirm(txt, data), 300);
+    localStorage.setItem('sdk_anon_target',  anonTarget);
+    // Stocker le message envoyé
+    pendingMsg = { id: data.msg_id, content: txt, from_anon: 1, sent_at: Math.floor(Date.now()/1000) };
+    // Connecter le socket anonyme maintenant
+    connectSocket({ anon_token: anonToken });
+    // Aller DIRECTEMENT dans le chat — pas d'écran intermédiaire
+    document.getElementById('ac-target').textContent = '@' + anonTarget;
+    document.getElementById('anon-msgs').innerHTML = '';
+    addMsg('anon-msgs', pendingMsg, true);
+    scrollMsgs('anon-msgs');
+    showScreen('s-anon-chat');
+    // Proposer inscription après 8 secondes dans le chat
+    setTimeout(() => { if (!token) openModal('signup-modal'); }, 8000);
   } catch(e) {
     showToast('❌ ' + e.message);
   } finally {
@@ -742,243 +689,127 @@ async function sendFirstAnonMsg() {
   }
 }
 
-function showSentConfirm(txt, data) {
-  // Afficher un écran de confirmation élégant avec proposition d'inscription
-  showScreen('s-sent-confirm');
-  document.getElementById('sc-target').textContent = '@' + anonTargetUser;
-  // Stocker les données pour entrer dans le chat ensuite
-  window._pendingMsg = { id: data.msg_id, content: txt, from_anon: 1, sent_at: Math.floor(Date.now()/1000) };
-}
-
 function goToAnonChat() {
   document.getElementById('anon-msgs').innerHTML = '';
-  if (window._pendingMsg) {
-    appendMsg('anon-msgs', window._pendingMsg, true);
-    scrollMsgs('anon-msgs');
-  }
+  if (pendingMsg) { addMsg('anon-msgs', pendingMsg, true); scrollMsgs('anon-msgs'); }
+  document.getElementById('ac-target').textContent = '@' + (anonTarget||'?');
   showScreen('s-anon-chat');
 }
 
-async function loadAnonChat() {
-  // Récupérer depuis localStorage si les variables sont perdues
-  if (!anonToken) anonToken = localStorage.getItem('sdk_anon_token');
-  if (!anonConvId) anonConvId = localStorage.getItem('sdk_anon_conv_id');
-
-  if (!anonToken || !anonConvId) {
-    // Pas de conv anonyme — retourner à la page d'envoi si on a un target
-    showScreen('s-anon');
-    return;
-  }
-
-  connectSocket(true, anonToken);
-
-  // Mettre à jour l'en-tête avec le bon username
-  if (!anonTargetUser && convsCache[anonConvId]?.owner_username) {
-    anonTargetUser = convsCache[anonConvId].owner_username;
-  }
-  if (anonTargetUser) {
-    document.getElementById('ac-target').textContent = '@' + anonTargetUser;
-  }
-
-  // Remettre le badge à 0
-  if (convsCache[anonConvId]) {
-    convsCache[anonConvId].unread = 0;
-    renderConvsFromCache();
-  }
-
-  showScreen('s-anon-chat');
+async function openAnonChat() {
+  document.getElementById('ac-target').textContent = '@' + (anonTarget||'?');
   document.getElementById('anon-msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">Chargement...</div>';
-
+  // RAZ badge
+  if (convsCache[anonConvId]) { convsCache[anonConvId].unread = 0; renderConvs(); }
+  showScreen('s-anon-chat');
   try {
-    const res = await fetch(API + '/api/anon/messages/' + anonConvId + '?token=' + anonToken);
-    if (!res.ok) {
-      anonToken = null; anonConvId = null;
-      localStorage.removeItem('sdk_anon_token');
-      localStorage.removeItem('sdk_anon_conv_id');
-      showScreen('s-anon');
-      return;
-    }
+    const res  = await fetch(API+'/api/anon/messages/'+anonConvId+'?token='+anonToken);
+    if (!res.ok) { resetAnonState(); showScreen('s-anon'); return; }
     const msgs = await res.json();
     document.getElementById('anon-msgs').innerHTML = '';
     if (!msgs.length) {
       document.getElementById('anon-msgs').innerHTML = '<div style="text-align:center;padding:30px;color:var(--tm);font-size:13px;">En attente de réponse... 👻</div>';
     } else {
-      msgs.forEach(m => appendMsg('anon-msgs', m, !!m.from_anon));
+      msgs.forEach(m => addMsg('anon-msgs', m, !!m.from_anon));
     }
     scrollMsgs('anon-msgs');
   } catch(e) {
-    document.getElementById('anon-msgs').innerHTML = '<div style="text-align:center;padding:30px;color:#f87171;font-size:13px;">Erreur — réessaie</div>';
+    document.getElementById('anon-msgs').innerHTML = '<div style="text-align:center;padding:30px;color:#f87171;">Erreur — réessaie</div>';
   }
 }
 
 async function sendAnonReply() {
-  const inp = document.getElementById('ac-inp');
-  const txt = inp.value.trim();
+  const inp = g('ac-inp'), txt = inp.value.trim();
   if (!txt || !anonConvId || !anonToken) return;
   inp.value = '';
   try {
-    const res = await fetch(API + '/api/anon/reply', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+    const res = await fetch(API+'/api/anon/reply', {
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ content: txt, anon_token: anonToken, conv_id: anonConvId })
     });
     const msg = await res.json();
     if (!res.ok) throw new Error(msg.error);
-    appendMsg('anon-msgs', msg, true); // l'anonyme a envoyé = "sent" de son point de vue
+    addMsg('anon-msgs', msg, true);
     scrollMsgs('anon-msgs');
   } catch(e) { showToast('❌ Erreur envoi'); }
 }
 
-// ─── INSCRIPTION DEPUIS PAGE ANONYME ─────────────────────────────────────────
-async function signupFromAnon() {
-  const errEl = document.getElementById('su-err');
-  errEl.textContent = '';
-  try {
-    const body = {
-      display_name: document.getElementById('su-dname').value.trim(),
-      username: document.getElementById('su-user').value.trim(),
-      password: document.getElementById('su-pass').value
-    };
-    const res = await fetch(API + '/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-    token = data.token; user = data.user;
-    localStorage.setItem('sdk_token', token);
-    localStorage.setItem('sdk_user', JSON.stringify(user));
-    closeModal('signup-modal');
-    showToast('🎉 Compte créé ! Bienvenue ' + user.display_name + ' 💜');
-    // Nettoyer l'URL et aller sur l'app
-    if (location.search) history.replaceState({}, '', '/');
-    startApp();
-  } catch(e) { errEl.textContent = e.message; }
+function anonGoBack() {
+  if (token && user) { startOwnerApp(); return; }
+  // Retourner au home anonyme avec la liste
+  showScreen('s-home');
+  loadAnonConv();
 }
 
-// ─── MESSAGES (commun owner + anon) ──────────────────────────────────────────
-function appendMsg(areaId, msg, isSent) {
+// Depuis écran confirmation → inscription
+function confirmGoSignup() { isSignup=true; document.getElementById('f-signup').style.display='block'; document.getElementById('f-login').style.display='none'; document.getElementById('auth-btn').textContent='Créer mon compte 🚀'; document.querySelectorAll('.tab')[0].classList.add('on'); document.querySelectorAll('.tab')[1].classList.remove('on'); showScreen('s-auth'); }
+function confirmGoLogin()  { isSignup=false; document.getElementById('f-signup').style.display='none'; document.getElementById('f-login').style.display='block'; document.getElementById('auth-btn').textContent='Se connecter'; document.querySelectorAll('.tab')[1].classList.add('on'); document.querySelectorAll('.tab')[0].classList.remove('on'); showScreen('s-auth'); }
+
+// ─── MESSAGES ─────────────────────────────────────────────────────────────────
+function addMsg(areaId, msg, isSent) {
   const area = document.getElementById(areaId);
   if (!area) return;
-  const time = fmtTime(typeof msg.sent_at === 'number' && msg.sent_at < 1e10 ? msg.sent_at * 1000 : msg.sent_at);
-  const div = document.createElement('div');
+  const ts   = typeof msg.sent_at === 'number' && msg.sent_at < 1e10 ? msg.sent_at*1000 : msg.sent_at;
+  const div  = document.createElement('div');
   div.className = 'mrow ' + (isSent ? 'sent' : 'recv');
   div.id = 'msg-' + msg.id;
-
   let timerHtml = '';
   if (!isSent && msg.expires_at) {
-    const expMs = (msg.expires_at < 1e10 ? msg.expires_at * 1000 : msg.expires_at);
+    const expMs = msg.expires_at < 1e10 ? msg.expires_at*1000 : msg.expires_at;
     timerHtml = `<div class="timer-bar-wrap" id="timer-${msg.id}"><div class="timer-bar-bg"><div class="timer-bar" id="bar-${msg.id}" style="width:100%"></div></div><span class="timer-label" id="tlabel-${msg.id}">⏳</span></div>`;
-    setTimeout(() => startMsgTimer(msg.id, expMs), 100);
+    setTimeout(() => startTimer(msg.id, expMs), 100);
   }
-
-  div.innerHTML = `
-    <div class="bbl ${isSent ? 'sent' : 'recv'}">${escHtml(msg.content)}</div>
-    <div class="btime">${time}</div>
-    ${timerHtml}`;
+  div.innerHTML = `<div class="bbl ${isSent?'sent':'recv'}">${esc(msg.content)}</div><div class="btime">${fmtTime(ts)}</div>${timerHtml}`;
   area.appendChild(div);
 }
 
 // ─── TIMER ÉPHÉMÈRE ───────────────────────────────────────────────────────────
-function startMsgTimer(msgId, expiresAtMs) {
-  if (msgTimers[msgId]) clearInterval(msgTimers[msgId]);
+function startTimer(id, expMs) {
+  if (msgTimers[id]) clearInterval(msgTimers[id]);
   function tick() {
-    const rem = expiresAtMs - Date.now();
-    const bar = document.getElementById('bar-' + msgId);
-    const label = document.getElementById('tlabel-' + msgId);
-    if (!bar) { clearInterval(msgTimers[msgId]); return; }
+    const rem = expMs - Date.now();
+    const bar = document.getElementById('bar-'+id);
+    const lbl = document.getElementById('tlabel-'+id);
+    if (!bar) { clearInterval(msgTimers[id]); return; }
     if (rem <= 0) {
-      clearInterval(msgTimers[msgId]);
-      const el = document.getElementById('msg-' + msgId);
-      if (el) { el.style.transition='opacity .8s,transform .8s'; el.style.opacity='0'; el.style.transform='scale(0.9)'; setTimeout(()=>el.remove(),800); }
+      clearInterval(msgTimers[id]);
+      const el = document.getElementById('msg-'+id);
+      if (el) { el.style.transition='opacity .8s'; el.style.opacity='0'; setTimeout(()=>el.remove(),800); }
       return;
     }
-    const pct = Math.max(0, (rem / (5*60*1000)) * 100);
-    bar.style.width = pct + '%';
-    if (pct < 20) bar.style.background = 'linear-gradient(90deg,#f87171,#ef4444)';
-    else if (pct < 50) bar.style.background = 'linear-gradient(90deg,#fb923c,#f97316)';
-    const s = Math.floor(rem/1000), m = Math.floor(s/60);
-    label.textContent = '⏳ ' + (m>0?m+'m':'') + (s%60) + 's';
+    const pct = Math.max(0, rem/(5*60*1000)*100);
+    bar.style.width = pct+'%';
+    if (pct<20) bar.style.background='linear-gradient(90deg,#f87171,#ef4444)';
+    else if (pct<50) bar.style.background='linear-gradient(90deg,#fb923c,#f97316)';
+    const s=Math.floor(rem/1000), m=Math.floor(s/60);
+    lbl.textContent = '⏳ '+(m>0?m+'m':'')+(s%60)+'s';
   }
   tick();
-  msgTimers[msgId] = setInterval(tick, 1000);
+  msgTimers[id] = setInterval(tick, 1000);
 }
 
 // ─── PARTAGE ──────────────────────────────────────────────────────────────────
-function getMyLink() { return location.origin + '/?u=' + (user?.username || ''); }
-
-function openShareModal() {
-  document.getElementById('share-modal-link').textContent = getMyLink();
-  openModal('share-modal');
-}
-
-function copyShareLink() {
-  navigator.clipboard.writeText(getMyLink()).then(() => { showToast('🔗 Lien copié !'); closeModal('share-modal'); }).catch(() => showToast(getMyLink()));
-}
-
-function shareVia(network) {
-  const link = getMyLink();
-  const msg = encodeURIComponent('💜 Envoie-moi un message anonyme sur SDK Anon ! Je ne saurai jamais qui tu es 👻\n' + link);
-  const urls = {
-    whatsapp: 'https://wa.me/?text=' + msg,
-    twitter:  'https://twitter.com/intent/tweet?text=' + msg,
-    facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link),
-    telegram: 'https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + msg,
-    sms:      'sms:?body=' + msg,
-    email:    'mailto:?subject=' + encodeURIComponent('Envoie-moi un message anonyme 👻') + '&body=' + msg,
-  };
-  if (network === 'instagram' || network === 'tiktok') {
-    navigator.clipboard.writeText(getMyLink()).catch(()=>{});
-    showToast('📋 Lien copié — colle-le dans ta bio ' + (network==='instagram'?'Instagram':'TikTok') + ' !');
-    closeModal('share-modal'); return;
-  }
-  if (urls[network]) window.open(urls[network], '_blank');
+function getMyLink() { return location.origin+'/?u='+(user?.username||''); }
+function openShareModal() { document.getElementById('share-modal-link').textContent=getMyLink(); openModal('share-modal'); }
+function copyShareLink() { navigator.clipboard.writeText(getMyLink()).then(()=>{showToast('🔗 Lien copié !');closeModal('share-modal');}).catch(()=>showToast(getMyLink())); }
+function shareVia(n) {
+  const l=getMyLink(), m=encodeURIComponent('💜 Envoie-moi un message anonyme sur SDK Anon ! Je ne saurai jamais qui tu es 👻\n'+l);
+  const urls={whatsapp:'https://wa.me/?text='+m,twitter:'https://twitter.com/intent/tweet?text='+m,facebook:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(l),telegram:'https://t.me/share/url?url='+encodeURIComponent(l)+'&text='+m,sms:'sms:?body='+m,email:'mailto:?subject='+encodeURIComponent('Envoie-moi un message anonyme 👻')+'&body='+m};
+  if (n==='instagram'||n==='tiktok') { navigator.clipboard.writeText(l).catch(()=>{}); showToast('📋 Lien copié — colle dans ta bio '+n+' !'); closeModal('share-modal'); return; }
+  if (urls[n]) window.open(urls[n],'_blank');
   closeModal('share-modal');
 }
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
+function g(id) { return document.getElementById(id); }
 function showScreen(id) { document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on')); document.getElementById(id).classList.add('on'); }
-
-function showSignupFromConfirm() {
-  // Pré-remplir les onglets sur "Créer un compte" et aller sur auth
-  isSignup = true;
-  document.getElementById('f-signup').style.display = 'block';
-  document.getElementById('f-login').style.display = 'none';
-  document.getElementById('auth-btn').textContent = 'Créer mon compte 🚀';
-  // Après auth, revenir dans le chat anon
-  window._afterAuthGoToAnonChat = true;
-  showScreen('s-auth');
-}
-
-function showLoginFromConfirm() {
-  isSignup = false;
-  document.getElementById('f-signup').style.display = 'none';
-  document.getElementById('f-login').style.display = 'block';
-  document.getElementById('auth-btn').textContent = 'Se connecter';
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
-  document.querySelectorAll('.tab')[1].classList.add('on');
-  window._afterAuthGoToAnonChat = true;
-  showScreen('s-auth');
-}
-function showHome() { showScreen('s-home'); curConv=null; loadConvs(); }
-function openModal(id) { document.getElementById(id).classList.add('on'); }
+function openModal(id)  { document.getElementById(id).classList.add('on'); }
 function closeModal(id) { document.getElementById(id).classList.remove('on'); }
-function scrollMsgs(id) { const a=document.getElementById(id); if(a) a.scrollTop=a.scrollHeight; }
+function scrollMsgs(id) { const a=document.getElementById(id); if(a) setTimeout(()=>a.scrollTop=a.scrollHeight,50); }
 function fmtTime(ts) { const d=new Date(ts),n=new Date(); return d.toDateString()===n.toDateString()?d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes():d.getDate()+'/'+(d.getMonth()+1); }
-function escHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.onclick = null;
-  t.style.cursor = 'default';
-  t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 3000);
-}
-
-function showToastClickable(msg, cb) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.cursor = 'pointer';
-  t.onclick = () => { t.classList.remove('on'); cb(); };
-  t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 6000);
-}
+function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function showToast(msg) { const t=g('toast'); t.textContent=msg; t.onclick=null; t.style.cursor='default'; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),3000); }
+function showToastClickable(msg,cb) { const t=g('toast'); t.textContent=msg; t.style.cursor='pointer'; t.onclick=()=>{t.classList.remove('on');cb();}; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),6000); }
 </script>
 </body>
 </html>
