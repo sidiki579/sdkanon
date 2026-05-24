@@ -278,6 +278,40 @@ io.on('connection', socket => {
   socket.on('disconnect', () => console.log('❌ Déconnecté:', socket.roomId));
 });
 
+// Page story — meta tags personnalisés par utilisateur pour Instagram/WhatsApp
+app.get('/story/:username', async (req, res) => {
+  try {
+    const username = req.params.username.toLowerCase();
+    const r = await query('SELECT display_name FROM users WHERE username=$1', [username]);
+    const name = r.rows[0]?.display_name || username;
+    const link = req.protocol + '://' + req.get('host') + '/?u=' + username;
+    const image = req.protocol + '://' + req.get('host') + '/og-image.png';
+    res.send('<!DOCTYPE html><html lang="fr"><head>' +
+      '<meta charset="UTF-8"/>' +
+      '<title>Message anonyme pour ' + name + ' &#128123;</title>' +
+      '<meta property="og:type" content="website"/>' +
+      '<meta property="og:site_name" content="SDK Anon"/>' +
+      '<meta property="og:title" content="Message anonyme pour ' + name + ' &#128123;"/>' +
+      '<meta property="og:description" content="Dis a ' + name + ' ce que tu penses vraiment... il/elle ne saura jamais qui tu es. 100% anonyme"/>' +
+      '<meta property="og:image" content="' + image + '"/>' +
+      '<meta property="og:image:width" content="1200"/>' +
+      '<meta property="og:image:height" content="630"/>' +
+      '<meta property="og:url" content="' + link + '"/>' +
+      '<meta name="twitter:card" content="summary_large_image"/>' +
+      '<meta name="twitter:title" content="Message anonyme pour ' + name + '"/>' +
+      '<meta name="twitter:description" content="Dis a ' + name + ' ce que tu penses vraiment... 100% anonyme."/>' +
+      '<meta name="twitter:image" content="' + image + '"/>' +
+      '<meta http-equiv="refresh" content="0;url=' + link + '"/>' +
+      '<style>body{margin:0;background:#0f0621;display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:white;text-align:center;}</style>' +
+      '</head><body><div>' +
+      '<div style="font-size:48px">&#128123;</div>' +
+      '<div style="font-size:24px;font-weight:700;color:#a78bfa">SDK Anon</div>' +
+      '<p style="color:#c4b5fd">Redirection vers la page de ' + name + '...</p>' +
+      '<p><a href="' + link + '" style="color:#a78bfa">Cliquer ici si besoin</a></p>' +
+      '</div></body></html>');
+  } catch(e) { res.redirect('/'); }
+});
+
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../client/public/index.html')));
 
 // ── DÉMARRAGE ─────────────────────────────────────────────────────────────────
