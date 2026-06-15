@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, interactive-widget=resizes-content"/>
 <title>SDK Anon — Messages anonymes</title>
 
 <!-- Open Graph — aperçu WhatsApp, Instagram, Telegram, Facebook -->
@@ -31,7 +31,7 @@
   --brd:rgba(167,139,250,0.25);
 }
 html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color:var(--ton);overflow:hidden;}
-#app{height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;}
 .scr{display:none;flex-direction:column;height:100%;overflow:hidden;}
 .scr.on{display:flex;}
 
@@ -111,7 +111,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 .bbl.sent{background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.12);color:var(--ton);border-bottom-right-radius:5px;}
 .bbl.recv{background:linear-gradient(135deg,var(--pbr),#9333ea);color:#fff;border-bottom-left-radius:5px;}
 .btime{font-size:10px;color:var(--tm);margin-top:3px;padding:0 3px;}
-.cinput-bar{padding:12px 14px;background:rgba(15,6,33,0.97);border-top:1px solid var(--brd);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.cinput-bar{padding:12px 14px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:rgba(15,6,33,0.97);border-top:1px solid var(--brd);display:flex;align-items:center;gap:8px;flex-shrink:0;position:sticky;bottom:0;z-index:10;}
 .cinput{flex:1;background:rgba(255,255,255,0.07);border:1px solid var(--brd);border-radius:22px;padding:10px 16px;color:var(--ton);font-family:'Outfit',sans-serif;font-size:14px;outline:none;}
 .cinput:focus{border-color:var(--pl);}
 .cinput::placeholder{color:rgba(196,181,253,0.35);}
@@ -824,6 +824,17 @@ function closeModal(id) { document.getElementById(id).classList.remove('on'); }
 function scrollMsgs(id) { const a=document.getElementById(id); if(a) setTimeout(()=>a.scrollTop=a.scrollHeight,50); }
 function fmtTime(ts) { const d=new Date(ts),n=new Date(); return d.toDateString()===n.toDateString()?d.getHours()+':'+(d.getMinutes()<10?'0':'')+d.getMinutes():d.getDate()+'/'+(d.getMonth()+1); }
 function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+// Clavier mobile — scroll automatique quand le clavier s'ouvre
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    const active = document.activeElement;
+    if (active && (active.id === 'c-inp' || active.id === 'ac-inp')) {
+      const area = active.id === 'c-inp' ? 'msgs' : 'anon-msgs';
+      setTimeout(() => scrollMsgs(area), 100);
+    }
+  });
+}
+
 function showToast(msg) { const t=g('toast'); t.textContent=msg; t.onclick=null; t.style.cursor='default'; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),3000); }
 function showToastClickable(msg,cb) { const t=g('toast'); t.textContent=msg; t.style.cursor='pointer'; t.onclick=()=>{t.classList.remove('on');cb();}; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),6000); }
 </script>
