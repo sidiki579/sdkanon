@@ -183,7 +183,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
     <div class="user-card">
       <div class="ava" id="h-ava">👻</div>
       <div style="flex:1;">
-        <div style="font-weight:600;font-size:15px;" id="h-name">-</div>
+        <div style="font-weight:600;font-size:15px;display:flex;align-items:center;gap:4px;"><span id="h-name">-</span><span id="h-verified" style="display:none;width:16px;height:16px;background:#3b82f6;border-radius:50%;align-items:center;justify-content:center;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="white" style="width:10px;height:10px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></div>
         <div style="font-size:12px;color:var(--tm);" id="h-handle">-</div>
       </div>
       <button class="ib" id="h-logout-btn" onclick="logout()"><i class="ti ti-logout" style="font-size:18px;"></i></button>
@@ -382,6 +382,9 @@ let pendingMsg   = null;    // message en attente d'affichage
 })();
 
 // ─── DÉMARRAGE APP OWNER ──────────────────────────────────────────────────────
+// Pseudo(s) du/des créateur(s) de l'app — badge vérifié affiché automatiquement
+const CREATOR_USERNAMES = ['superviseur'];
+
 function startOwnerApp() {
   document.getElementById('h-ava').textContent = user.display_name[0].toUpperCase();
   document.getElementById('h-name').textContent = user.display_name;
@@ -389,6 +392,8 @@ function startOwnerApp() {
   document.getElementById('h-link').textContent = location.host + '/?u=' + user.username;
   document.getElementById('link-box-wrap').style.display = '';
   document.getElementById('h-logout-btn').style.display = '';
+  const badge = document.getElementById('h-verified');
+  if (badge) badge.style.display = CREATOR_USERNAMES.includes(user.username) ? 'inline-flex' : 'none';
   connectSocket({ token });
   loadOwnerConvs();
   showScreen('s-home');
