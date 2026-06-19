@@ -331,6 +331,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--pd);color
 
 <script>
 const API = window.location.origin;
+const CREATOR_USERNAMES = ['superviseur']; // Pseudo(s) avec badge vérifié
 
 // ─── ÉTAT GLOBAL ──────────────────────────────────────────────────────────────
 let token     = localStorage.getItem('sdk_token');
@@ -382,9 +383,6 @@ let pendingMsg   = null;    // message en attente d'affichage
 })();
 
 // ─── DÉMARRAGE APP OWNER ──────────────────────────────────────────────────────
-// Pseudo(s) du/des créateur(s) de l'app — badge vérifié affiché automatiquement
-const CREATOR_USERNAMES = ['superviseur'];
-
 function startOwnerApp() {
   document.getElementById('h-ava').textContent = user.display_name[0].toUpperCase();
   document.getElementById('h-name').textContent = user.display_name;
